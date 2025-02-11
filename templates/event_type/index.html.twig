@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventType index{% endblock %}
+
+{% block main %}
+    <h1>EventType index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Backend</th>
+                <th>Frontend</th>
+                <th>Api</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event_type in event_types %}
+            <tr>
+                <td>{{ event_type.id }}</td>
+                <td>{{ event_type.backend }}</td>
+                <td>{{ event_type.frontend }}</td>
+                <td>{{ event_type.api }}</td>
+                <td>
+                    <a href="{{ path('app_event_type_show', {'id': event_type.id}) }}">show</a>
+                    <a href="{{ path('app_event_type_edit', {'id': event_type.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_event_type_new') }}">Create new</a>
+{% endblock %}

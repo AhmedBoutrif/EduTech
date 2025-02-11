@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event Details{% endblock %}
+
+{% block body %}
+<style>
+    .event-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .event-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="event-wrapper">
+    <h1>Event Details: {{ event.name }} 🎉</h1>
+
+    <p><strong>Date:</strong> {{ event.date|date('Y-m-d H:i') }}</p>
+    <p><strong>Location:</strong> {{ event.location }}</p>
+    <p><strong>Description:</strong> {{ event.description }}</p>
+
+    <a href="{{ path('event_index') }}">Back to events</a>
+</div>
+{% endblock %}

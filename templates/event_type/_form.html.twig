@@ -1,0 +1,22 @@
+{# templates/controller_event/_form.html.twig #}
+{{ form_start(form) }}
+    <div>
+        {{ form_label(form.backend) }}
+        {{ form_widget(form.backend) }}
+        {{ form_errors(form.backend) }}
+    </div>
+
+    <div>
+        {{ form_label(form.frontend) }}
+        {{ form_widget(form.frontend) }}
+        {{ form_errors(form.frontend) }}
+    </div>
+
+    <div>
+        {{ form_label(form.api) }}
+        {{ form_widget(form.api) }}
+        {{ form_errors(form.api) }}
+    </div>
+
+    <button type="Save  ">Save</button>
+{{ form_end(form) }}

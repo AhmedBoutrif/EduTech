@@ -1,0 +1,33 @@
+<div>
+    {{ form_start(form) }}
+
+    <div>
+        {{ form_label(form.title) }}
+        {{ form_widget(form.title, {'attr': {'size': '30'}}) }}
+        {{ form_errors(form.title) }}
+    </div>
+
+    <div>
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {'attr': {'size': '30'}}) }}
+        {{ form_errors(form.description) }}
+    </div>
+
+    <div>
+        {{ form_label(form.date) }}
+        {{ form_widget(form.date) }}
+        {{ form_errors(form.date) }}
+    </div>
+
+    <div>
+        {{ form_label(form.type_event) }}
+        {{ form_widget(form.type_event) }}
+        {{ form_errors(form.type_event) }}
+    </div>
+
+    <div>
+        <button type="Save">{{ button_label|default('Save') }}</button>
+    </div>
+
+    {{ form_end(form) }}
+</div>

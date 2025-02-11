@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventType{% endblock %}
+
+{% block main %}
+    <h1>EventType</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ event_type.id }}</td>
+            </tr>
+            <tr>
+                <th>Backend</th>
+                <td>{{ event_type.backend }}</td>
+            </tr>
+            <tr>
+                <th>Frontend</th>
+                <td>{{ event_type.frontend }}</td>
+            </tr>
+            <tr>
+                <th>Api</th>
+                <td>{{ event_type.api }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_event_type_index') }}">back to list</a>
+
+    <a href="{{ path('app_event_type_edit', {'id': event_type.id}) }}">edit</a>
+
+    {{ include('event_type/_delete_form.html.twig') }}
+{% endblock %}
