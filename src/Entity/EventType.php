@@ -46,7 +46,7 @@ class EventType
     )]
     private ?string $api = null;
 
-    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'type_event')]
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'typeEvent')]
     private Collection $events;
 
     public function __construct()
