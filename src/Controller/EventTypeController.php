@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/event/type')]
+#[Route('/type')]
 final class EventTypeController extends AbstractController{
     #[Route(name: 'app_event_type_index', methods: ['GET'])]
     public function index(EventTypeRepository $eventTypeRepository): Response

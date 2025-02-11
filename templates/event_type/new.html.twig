@@ -1,11 +1,62 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New EventType{% endblock %}
+{% block title %}Create New EventType{% endblock %}
 
 {% block main %}
-    <h1>Create new EventType</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Create New EventType</h1>
 
-    {{ include('event_type/_form.html.twig') }}
+        {# Affichage des messages de succès ou d'erreur #}
+        {% for message in app.session.flashBag.get('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        
+        {% for message in app.session.flashBag.get('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
 
-    <a href="{{ path('app_event_type_index') }}">back to list</a>
+        {# Formulaire #}
+        <div class="card shadow-lg p-4 mb-4">
+            <h5 class="card-title mb-4">EventType Details</h5>
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="form-group">
+                    {{ form_label(form.backend, 'Backend') }}
+                    {{ form_widget(form.backend, {'attr': {'class': 'form-control', 'placeholder': 'Enter Backend Details'}}) }}
+                    {{ form_errors(form.backend) }}
+                </div>
+                
+                <div class="form-group">
+                    {{ form_label(form.frontend, 'Frontend') }}
+                    {{ form_widget(form.frontend, {'attr': {'class': 'form-control', 'placeholder': 'Enter Frontend Details'}}) }}
+                    {{ form_errors(form.frontend) }}
+                </div>
+                
+                <div class="form-group">
+                    {{ form_label(form.api, 'API') }}
+                    {{ form_widget(form.api, {'attr': {'class': 'form-control', 'placeholder': 'Enter API Details'}}) }}
+                    {{ form_errors(form.api) }}
+                </div>
+
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-primary btn-block">Create EventType</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+
+        {# Lien de retour à la liste des EventTypes #}
+        <div class="text-center mt-4">
+            <a href="{{ path('app_event_type_index') }}" class="btn btn-success">Back to EventType List</a>
+        </div>
+    </div>
 {% endblock %}

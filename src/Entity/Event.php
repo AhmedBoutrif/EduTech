@@ -89,4 +89,5 @@ class Event
         $this->typeEvent = $typeEvent;
         return $this;
     }
+    
 }

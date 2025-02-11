@@ -1,20 +1,70 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Event{% endblock %}
+{% block title %}Create a New Event{% endblock %}
 
 {% block main %}
-    <h1>Create a new Event</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Create a New Event</h1>
 
-    {# Affichage des messages de succès ou d'erreur #}
-    {% for message in app.session.flashBag.get('success') %}
-        <div class="alert alert-success">
-            {{ message }}
+        {# Affichage des messages de succès ou d'erreur #}
+        {% for message in app.session.flashBag.get('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        
+        {% for message in app.session.flashBag.get('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+
+        {# Formulaire #}
+        <div class="card shadow-lg p-4 mb-4">
+            <h5 class="card-title mb-4">Event Details</h5>
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="form-group">
+                    {{ form_label(form.title, 'Event Title') }}
+                    {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter event title'}}) }}
+                    {{ form_errors(form.title) }}
+                </div>
+                
+                <div class="form-group">
+                    {{ form_label(form.description, 'Event Description') }}
+                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 4, 'placeholder': 'Provide a detailed description'}}) }}
+                    {{ form_errors(form.description) }}
+                </div>
+                
+                <div class="form-group">
+                    {{ form_label(form.date, 'Event Date') }}
+                    {{ form_widget(form.date, {'attr': {'class': 'form-control', 'placeholder': 'Select event date'}}) }}
+                    {{ form_errors(form.date) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.type_event, 'Event Type') }}
+                    {{ form_widget(form.type_event, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.type_event) }}
+                </div>
+
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-primary btn-block">Create Event</button>
+                </div>
+            {{ form_end(form) }}
         </div>
-    {% endfor %}
 
-    {# Inclure le formulaire depuis un fichier externe (s'il existe) #}
-    {{ include('controller_event/_form.html.twig') }}
-
-    {# Lien de retour à la liste des événements #}
-    <a href="{{ path('app_controller_event_index') }}">Back to list</a>
+        {# Lien de retour à la liste des événements dans un cadre similaire #}
+        <div class="card shadow-lg p-4">
+            <div class="text-center">
+                <a href="{{ path('app_controller_event_index') }}" class="btn btn-success">Back to Event List</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
