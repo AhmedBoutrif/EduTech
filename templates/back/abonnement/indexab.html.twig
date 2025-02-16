@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Abonnements{% endblock %}
+
+{% block main %}
+    <h1>Gestion des Abonnements</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Durée</th>
+                <th>Prix</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for abonnement in abonnements %}
+            <tr>
+                <td>{{ abonnement.id }}</td>
+                <td>{{ abonnement.nom }}</td>
+                <td>{{ abonnement.type }}</td>
+                <td>{{ abonnement.duree }}</td>
+                <td>{{ abonnement.prix }}</td>
+                <td>{{ abonnement.description }}</td>
+                <td>
+                    <a href="{{ path('admin_abonnement_show', {'id': abonnement.id}) }}">Voir</a>
+                    <a href="{{ path('admin_abonnement_edit', {'id': abonnement.id}) }}">Modifier</a>
+                    <form method="post" action="{{ path('admin_abonnement_delete', {'id': abonnement.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet abonnement ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ abonnement.id) }}">
+                        <button type="submit">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">Aucun abonnement trouvé.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_abonnement_new') }}" class="btn btn-primary">Créer un nouvel abonnement</a>
+{% endblock %}

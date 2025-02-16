@@ -1,0 +1,17 @@
+{{ form_start(form) }}
+
+    <div class="form-group">
+        {{ form_label(form.nb_total) }}
+        {{ form_widget(form.nb_total, { 'attr': {'class': 'form-control'} }) }}
+        {% if form.nb_total.vars.errors|length > 0 %}
+            <div class="text-danger">
+                {{ form_errors(form.nb_total) }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        {{ form_widget(form.submit) }}
+    </div>
+
+{{ form_end(form) }}

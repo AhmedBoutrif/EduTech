@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création Panier{% endblock %}
+
+{% block main %}
+    <h1>Créer un nouveau panier</h1>
+
+    {# Affichage des erreurs globales si le formulaire est soumis et invalide #}
+    {% if form.vars.errors|length > 0 %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for error in form.vars.errors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        <div class="mb-3">
+            {{ form_label(form.nb_total) }}
+            {{ form_widget(form.nb_total, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.nb_total) }}
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Créer</button>
+    {{ form_end(form) }}
+
+    {# Si un panier a été créé, afficher le nombre total d'articles dans ce panier #}
+    {% if panier is not null %}
+        <div class="alert alert-success mt-4">
+            Panier créé avec succès ! Nombre total d'articles : {{ panier.nbTotal }}
+        </div>
+    {% endif %}
+
+{% endblock %}

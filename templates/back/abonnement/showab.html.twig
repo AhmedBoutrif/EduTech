@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Abonnement{% endblock %}
+
+{% block main %}
+    <h1>Détails de l'Abonnement</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>ID</th>
+                <td>{{ abonnement.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ abonnement.nom }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ abonnement.type }}</td>
+            </tr>
+            <tr>
+                <th>Durée</th>
+                <td>{{ abonnement.duree }}</td>
+            </tr>
+            <tr>
+                <th>Prix</th>
+                <td>{{ abonnement.prix }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ abonnement.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_abonnement_index') }}" class="btn btn-secondary">Retour à la liste</a>
+    <a href="{{ path('admin_abonnement_edit', {'id': abonnement.id}) }}" class="btn btn-warning">Modifier</a>
+
+    {{ include('admin/abonnement/_delete_form.html.twig') }}
+{% endblock %}

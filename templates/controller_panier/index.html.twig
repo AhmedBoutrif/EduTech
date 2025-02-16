@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des paniers{% endblock %}
+
+{% block main %}
+    <h1>Liste des paniers</h1>
+
+    <ul>
+        {% for panier in paniers %}
+            <li>{{ panier.nbTotal }} articles</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

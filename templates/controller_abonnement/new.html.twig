@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <h1>Créer un abonnement</h1>
+
+    {# Formulaire avec novalidate pour désactiver la validation HTML5 #}
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        {# Affichage des erreurs globales du formulaire #}
+        {% for error in form.vars.errors %}
+            <div class="alert alert-danger">{{ error.message }}</div>
+        {% endfor %}
+
+        {# Champ pour le nom #}
+        <div class="mb-3">
+            {{ form_label(form.nom) }}
+            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.nom) }}
+        </div>
+
+
+
+        {# Champ pour la durée #}
+        <div class="mb-3">
+            {{ form_label(form.duree) }}
+            {{ form_widget(form.duree, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.duree) }}
+        </div>
+
+        {# Champ pour le prix #}
+        <div class="mb-3">
+            {{ form_label(form.prix) }}
+            {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.prix) }}
+        </div>
+
+        {# Champ pour la description #}
+        <div class="mb-3">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        {# Bouton de soumission #}
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+
+    {{ form_end(form) }}
+{% endblock %}
