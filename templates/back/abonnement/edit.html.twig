@@ -1,0 +1,96 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Edit Abonnement{% endblock %}
+
+{% block body %}
+<main id="main" class="main">
+    <div class="pagetitle text-center">
+        <h1>Edit Abonnement</h1>
+        <nav>
+            <ol class="breadcrumb d-flex justify-content-center">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item">Forms</li>
+                <li class="breadcrumb-item active">Edit</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Modifier Abonnement</h5>
+                        
+                        <style>
+                            form {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 15px;
+                            }
+                            .form-group {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 5px;
+                            }
+                            .form-group label {
+                                font-weight: bold;
+                            }
+                            .form-control {
+                                width: 100%;
+                                padding: 10px;
+                                border: 1px solid #ced4da;
+                                border-radius: 5px;
+                                font-size: 1rem;
+                            }
+                            .btn-container {
+                                display: flex;
+                                justify-content: space-between;
+                                margin-top: 15px;
+                            }
+                            .btn {
+                                padding: 10px 15px;
+                                border-radius: 5px;
+                                font-size: 1rem;
+                                font-weight: bold;
+                                transition: all 0.3s;
+                                text-align: center;
+                            }
+                            .btn-update {
+                                background-color: black !important;
+                                color: white !important;
+                            }
+                            .btn-update:hover {
+                                background-color: #333 !important;
+                            }
+                            .btn-secondary {
+                                background-color: #6c757d;
+                                color: white;
+                            }
+                            .btn-secondary:hover {
+                                background-color: #5a6268;
+                            }
+                        </style>
+                        
+                        {{ form_start(form) }}
+                            {% for field in form %}
+                                <div class="form-group">
+                                    {{ form_label(field) }}
+                                    {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(field) }}
+                                </div>
+                            {% endfor %}
+                            <div class="btn-container">
+                                <button class="btn btn-update">{{ button_label|default('Save') }}</button>
+                                <a href="{{ path('app_controller_abonnement_index') }}" class="btn btn-secondary">Retour</a>
+                            </div>
+                        {{ form_end(form) }}
+                        
+                        {{ include('controller_abonnement/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main><!-- End #main -->
+{% endblock %}

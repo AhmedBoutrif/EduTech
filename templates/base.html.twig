@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Vendor CSS Files -->
     <link href="{{ asset('assets/front/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/front/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
@@ -41,13 +41,33 @@
 
             <nav id="navmenu" class="navmenu">
                 <ul>
-                    <li><a href="{{ path('app_home') }}#hero" class="active">app_home</a></li>
+                    <li><a href="{{ path('app_home') }}" class="active">app_home</a></li>
                     
-                    <li><a href="{{ path('app_services') }}#services">Services</a></li>
-                    <li><a href="{{ path('app_portfolio') }}#portfolio">Portfolio</a></li>
-                    <li><a href="{{ path('app_pricing') }}#pricing">Pricing</a></li>
-                    <li><a href="{{ path('app_team') }}#team">Team</a></li>
+                    <li><a href="{{ path('app_services') }}">Services</a></li>
+                    <li><a href="{{ path('app_portfolio') }}">Portfolio</a></li>
+                    <li><a href="{{ path('app_pricing') }}">Susbcribe</a></li>
+                    <li><a href="{{ path('app_team') }}">Team</a></li>
                     <li><a href="{{ path('app_blog') }}">Blog</a></li>
+                    <li><a href="{{ path('app_certification_index') }}">Certifications</a></li>
+
+            
+
+                    <li>
+                        <a href="{{ path('app_cart') }}" class="cart-icon">
+                            <i class="bi bi-cart"></i>
+                        </a>
+                    </li>
+
+                        
+                    <li>
+
+                        <a  href="{{ path('app_favorite_index') }}"  class="cart-icon" >
+                            <i class="fas fa-heart"></i>
+                        </a>
+                    </li>
+
+                    
+
             
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>

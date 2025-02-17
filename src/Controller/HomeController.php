@@ -5,10 +5,11 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\AbonnementRepository;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'app_home')]
+    #[Route('', name: 'app_home')]
     public function index(): Response
     {
         return $this->render('home/index.html.twig', [
@@ -23,13 +24,7 @@ class HomeController extends AbstractController
             
         ]);
     }
-    #[Route('/pricing', name: 'app_pricing')]
-    public function pricing(): Response
-    {
-        return $this->render('home/pricing.html.twig', [
-            
-        ]);
-    }
+
     #[Route('/team', name: 'app_team')]
     public function team(): Response
     {
@@ -51,4 +46,18 @@ class HomeController extends AbstractController
             
         ]);
     }
+
+
+    #[Route('/pricing' , name: 'app_pricing', methods: ['GET'])]
+    public function pricing(AbonnementRepository $abonnementRepository): Response
+    {
+        return $this->render('home/pricing.html.twig', [
+            'pricings' => $abonnementRepository->findAll(),
+        ]);
+    }
+    
+
+
+
+    
 }

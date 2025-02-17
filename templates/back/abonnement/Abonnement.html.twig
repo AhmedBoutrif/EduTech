@@ -25,35 +25,35 @@
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <h5 class="card-title">Abonnements</h5>
-                <a href="" class="btn btn-success">Ajouter</a>
+                <a href="{{ path('app_controller_abonnement_new') }}" class="btn btn-success btn-sm">Ajouter</a>
               </div>
 
               <!-- Table with stripped rows -->
               <table class="table datatable">
                 <thead>
-<tr>
-  <th><b>N</b>ame</th>
-  <th>Prix</th>
-  <th>Description</th>
-  <th>Durée</th>
-  <th>Action</th>
-</tr>
-</thead>
-<tbody>
-{% for abonnement in abonnements %}
-<tr>
-  <td>{{ abonnement.nom }}</td>
-  <td>{{ abonnement.prix }}</td>
-  <td>{{ abonnement.description }}</td>
-  <td>{{ abonnement.duree }}</td>
-  <td>
-    <a href="{{ path('app_controller_abonnement_edit', {'id': abonnement.id}) }}" class="btn btn-primary">Modifier</a>
-    <a href="" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet abonnement ?');">
-        {{ include('controller_abonnement/_delete_form.html.twig') }}
-    </a>
-  </td>
-</tr>
-{% endfor %}
+                  <tr>
+                    <th><b>N</b>ame</th>
+                    <th>Prix</th>
+                    <th>Description</th>
+                    <th>Durée</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for abonnement in abonnements %}
+                  <tr>
+                    <td>{{ abonnement.nom }}</td>
+                    <td>{{ abonnement.prix }}</td>
+                    <td>{{ abonnement.description }}</td>
+                    <td>{{ abonnement.duree }}</td>
+                    <td class="d-flex gap-2">
+                      <a href="{{ path('app_controller_abonnement_edit', {'id': abonnement.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                      <div>
+                        {{ include('controller_abonnement/_delete_form.html.twig', { 'id': abonnement.id }) }}
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
                 </tbody>
               </table>
               <!-- End Table with stripped rows -->
