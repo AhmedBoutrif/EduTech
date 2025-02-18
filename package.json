@@ -1,0 +1,12 @@
+{
+  "name": "edutech-(1)",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production"
+  },
+  "dependencies": {
+    "@symfony/webpack-encore": "^4.0.0"
+  }
+}
