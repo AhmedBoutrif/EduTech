@@ -1,0 +1,57 @@
+
+{% extends 'baseB.html.twig' %}
+
+{% block title %}New Comment{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Create New Comment</h1>
+
+        <!-- Affichage des messages flash -->
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
+
+                        <div class="mb-3">
+                            {{ form_label(form.contenu, 'Commentaire', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.contenu, {'attr': {'class': 'form-control', 'placeholder': 'Write your comment here...', 'rows': 4}}) }}
+                            <div class="invalid-feedback">
+                                {{ form_errors(form.contenu) }}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-send-fill me-2"></i> Post Comment
+                            </button>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <a href="{{ path('app_commentaireb_index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

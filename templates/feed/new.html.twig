@@ -3,9 +3,52 @@
 {% block title %}New Feed{% endblock %}
 
 {% block main %}
-    <h1>Create new Feed</h1>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="card-title mb-0">Create New Feed</h1>
+                    </div>
+                    <div class="card-body">
+                        
+                        {# 🔥 Afficher les messages flash d'erreur (mots interdits, autres erreurs) 🔥 #}
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
 
-    {{ include('feed/_form.html.twig') }}
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
 
-    <a href="{{ path('app_feed_index') }}">back to list</a>
+                        <div class="mb-3">
+                            {{ form_label(form.publication, 'Publication', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.publication, {'attr': {'class': 'form-control', 'placeholder': 'Share your thoughts...', 'rows': 4}}) }}
+
+                            {# 🔥 Afficher les erreurs de validation juste en dessous du champ 🔥 #}
+                            {% if form_errors(form.publication) %}
+                                <div class="alert alert-danger mt-2">
+                                    {{ form_errors(form.publication) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-send-fill me-2"></i> Post
+                            </button>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <a href="{{ path('app_feed_index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

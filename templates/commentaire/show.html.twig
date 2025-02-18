@@ -3,24 +3,36 @@
 {% block title %}Commentaire{% endblock %}
 
 {% block main %}
-    <h1>Commentaire</h1>
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Commentaire Details</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ commentaire.id }}</td>
-            </tr>
-            <tr>
-                <th>Contenu</th>
-                <td>{{ commentaire.contenu }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <!-- Commentaire Table -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <th class="w-25">Id</th>
+                            <td>{{ commentaire.id }}</td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">Contenu</th>
+                            <td>{{ commentaire.contenu }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <a href="{{ path('app_commentaire_index') }}">back to list</a>
+        <!-- Navigation Links -->
+        <div class="d-flex justify-content-between">
+            <a href="{{ path('app_commentaire_index') }}" class="btn btn-secondary">Back to List</a>
+            <a href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-primary">Edit</a>
+        </div>
 
-    <a href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}">edit</a>
-
-    {{ include('commentaire/_delete_form.html.twig') }}
+        <!-- Delete Form -->
+        <div class="mt-3 text-center">
+            {{ include('commentaire/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Feed{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Feed Details</h1>
+
+        <!-- Feed Table -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <th class="w-25">Id</th>
+                            <td>{{ feed.id }}</td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">Publication</th>
+                            <td>{{ feed.publication }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Commentaires Section -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2>Commentaires</h2>
+                <ul class="list-group">
+                    {% for commentaire in feed.Commentaire %}
+                        <li class="list-group-item">{{ commentaire.contenu }}</li>
+                    {% else %}
+                        <li class="list-group-item">Aucun commentaire pour le moment.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="d-flex justify-content-between">
+            <a href="{{ path('app_feedb_index') }}" class="btn btn-secondary">Back to List</a>
+            <a href="{{ path('app_feedb_edit', {'id': feed.id}) }}" class="btn btn-primary">Edit</a>
+<a href="{{ path('app_commentaireb_new', {'id': feed.id}) }}" class="btn btn-success">Ajouter un commentaire</a>
+
+        </div>
+
+        <!-- Delete Form -->
+        <div class="mt-3 text-center">
+            {{ include('feed/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

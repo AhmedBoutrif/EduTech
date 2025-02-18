@@ -1,35 +1,52 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Feed index{% endblock %}
+{% block title %}Feed Index{% endblock %}
 
 {% block main %}
-    <h1>Feed index</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Feed Index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Publication</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for feed in feeds %}
-            <tr>
-                <td>{{ feed.id }}</td>
-                <td>{{ feed.publication }}</td>
-                <td>
-                    <a href="{{ path('app_feed_show', {'id': feed.id}) }}">show</a>
-                    <a href="{{ path('app_feed_edit', {'id': feed.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <!-- Bouton pour créer un nouveau feed -->
+        <div class="text-end mb-4">
+            <a href="{{ path('app_feed_new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New Feed
+            </a>
+        </div>
 
-    <a href="{{ path('app_feed_new') }}">Create new</a>
+        <!-- Tableau des feeds -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            
+                            <th scope="col">Publication</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for feed in feeds %}
+                            <tr>
+                            
+                                <td>{{ feed.publication }}</td>
+                                <td>
+                                    <a href="{{ path('app_feed_show', {'id': feed.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> Show
+                                    </a>
+                                    <a href="{{ path('app_feed_edit', {'id': feed.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center">No feeds found</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+       
 {% endblock %}

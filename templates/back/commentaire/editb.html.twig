@@ -1,0 +1,25 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Edit Commentaire{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Edit Commentaire</h1>
+        
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <!-- Form for updating the comment -->
+                {{ include('commentaire/_form.html.twig', {'button_label': 'Update', 'class': 'btn btn-primary'}) }}
+            </div>
+        </div>
+        
+        <div class="mt-3 text-center">
+            <a href="{{ path('app_commentaireb_index') }}" class="btn btn-secondary">Back to List</a>
+        </div>
+
+        <div class="mt-4 text-center">
+            <!-- Delete Form for comment -->
+            {{ include('commentaire/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

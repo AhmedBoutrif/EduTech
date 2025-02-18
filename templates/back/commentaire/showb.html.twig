@@ -1,0 +1,38 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Commentaire{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Commentaire Details</h1>
+
+        <!-- Commentaire Table -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <th class="w-25">Id</th>
+                            <td>{{ commentaire.id }}</td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">Contenu</th>
+                            <td>{{ commentaire.contenu }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="d-flex justify-content-between">
+            <a href="{{ path('app_commentaireb_index') }}" class="btn btn-secondary">Back to List</a>
+            <a href="{{ path('app_commentaireb_edit', {'id': commentaire.id}) }}" class="btn btn-primary">Edit</a>
+        </div>
+
+        <!-- Delete Form -->
+        <div class="mt-3 text-center">
+            {{ include('commentaire/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

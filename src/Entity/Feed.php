@@ -1,12 +1,15 @@
 <?php
 
+// src/Entity/Feed.php
+
 namespace App\Entity;
 
 use App\Repository\FeedRepository;
+use App\Validator\Constraints as CustomAssert; // Import the custom validation namespace
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert; 
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FeedRepository::class)]
 class Feed
@@ -17,7 +20,14 @@ class Feed
     private ?int $id = null;
 
     #[ORM\Column(length: 500)]
-    #[Assert\NotBlank(message: "La publication ne peut pas être vide.")] // Validation pour le champ publication
+    #[Assert\NotBlank(message: "La publication ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 10,
+        max: 500,
+        minMessage: "La publication doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "La publication ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[CustomAssert\ForbiddenWords] // Apply custom forbidden words validation here
     private ?string $publication = null;
 
     /**

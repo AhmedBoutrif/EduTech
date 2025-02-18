@@ -40,4 +40,14 @@ class CommentaireRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findDuplicateComment(string $contenu): ?Commentaire
+{
+    return $this->createQueryBuilder('c')
+        ->andWhere('c.contenu = :contenu')
+        ->setParameter('contenu', $contenu)
+        ->setMaxResults(1) // On ne récupère qu'un seul résultat
+        ->getQuery()
+        ->getOneOrNullResult();
+}
+
 }

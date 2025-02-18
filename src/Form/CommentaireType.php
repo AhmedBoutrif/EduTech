@@ -12,14 +12,14 @@ class CommentaireType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('contenu')
+            ->add('contenu')  // Add form fields for the Commentaire entity
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Commentaire::class,
+            'data_class' => Commentaire::class,  // Ensure the form is tied to the Commentaire entity
         ]);
     }
 }

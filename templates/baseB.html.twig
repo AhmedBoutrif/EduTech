@@ -48,7 +48,7 @@
         <img src="assets/back/img/logo.png" alt="">
         <span class="d-none d-lg-block">NiceAdmin</span>
       </a>
-      <i class="bi bi-list toggle-sidebar-btn"></i>
+      <button id="toggleSidebar" class="btn btn-secondary">Toggle Sidebar</button>
     </div><!-- End Logo -->
 
     <div class="search-bar">
@@ -373,7 +373,7 @@
   <ul id="feed-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
     <li>
       
-      <a href="{{ path('app_feed') }}">
+      <a href="{{ path('app_feedb_index') }}">
         <i class="bi bi-circle"></i><span>Notifications</span>
       </a>
     </li>
@@ -1075,6 +1075,7 @@
                     }]
                   });
                 });
+                
               </script>
 
             </div>
@@ -1119,6 +1120,13 @@
 
 <!-- Template Main JS File -->
 <script src="{{ asset('assets/back/backjs/main.js') }}"></script>
+<script>
+    document.getElementById('toggleSidebar').addEventListener('click', function() {
+        let sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('d-none');
+    });
+</script>
+
 
 </body>
 {% endblock %}
