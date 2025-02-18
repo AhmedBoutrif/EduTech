@@ -1,0 +1,57 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Liste des Réservations{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Liste des Réservations</h1>
+
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Sujet</th>
+                    <th>Heure de début</th>
+                    <th>Heure de fin</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                    {% set currentDateTime = "now"|date("Y-m-d H:i") %}
+                    {% set reservationStartTime = reservation.startTime|date("Y-m-d H:i") %}
+                    {% set reservationEndTime = (reservation.startTime|date_modify('+' ~ reservation.duration ~ ' minutes'))|date("Y-m-d H:i") %}
+                    {% set isPast = reservationEndTime < currentDateTime %}
+
+                    <tr>
+                        <td>{{ reservation.topic }}</td>
+                        <td>{{ reservationStartTime }}</td>
+                        <td>{{ reservationEndTime }}</td>
+                        <td>
+                            {% if reservation.status == 'confirmed' %}
+                                <span class="badge bg-success">Confirmé</span>
+                            {% elseif reservation.status == 'not confirmed' %}
+                                <span class="badge bg-warning text-dark">En attente</span>
+                            {% else %}
+                                <span class="badge bg-danger">Annulé</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not isPast %}
+                                <a href="{{ path('admin_reservation_edit', {'id': reservation.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                <a href="{{ path('admin_reservation_delete', {'id': reservation.id}) }}" class="btn btn-danger btn-sm" 
+                                   onclick="return confirm('Voulez-vous vraiment supprimer cette réservation ?');">Supprimer</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">Aucune réservation trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('admin_Avaibility_show', {'id': AvaibilityId}) }}" class="btn btn-secondary">Retour à la disponibilité</a>
+    </div>
+{% endblock %}

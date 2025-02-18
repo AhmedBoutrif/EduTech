@@ -1,0 +1,94 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Modifier la réservation{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Modifier la réservation</h1>
+        
+        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+        
+        <div class="mb-3">
+            {{ form_label(form.topic, 'Sujet ', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.topic, {
+                'attr': {
+                    'class': 'form-control',
+                    'id': 'topicInput',
+                    'maxlength': '255',
+                    'oninput': 'updateCharCount()'
+                }
+            }) }}   
+            <p id="charCount" class="text-muted">0 / 255</p>
+            
+            {% if form.topic.vars.errors|length > 0 %}
+                <p class="text-danger">{{ form_errors(form.topic) }}</p>
+            {% endif %}
+            {{ form_errors(form.topic) }}
+        </div>
+
+      
+<div class="form-group">
+    {{ form_label(form.start_time) }}
+    {{ form_widget(form.start_time, {
+        'attr': {
+            'class': 'form-control flatpickr',
+            'value': form.start_time.vars.value ? form.start_time.vars.value|date('Y-m-d\TH:i') : ''
+        }
+    }) }}
+</div>
+
+        <div class="mb-3">
+            {{ form_label(form.duration, "Durée (minutes)", {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.duration, {
+                'attr': {
+                    'class': 'form-control',
+                    'id': 'durationInput'
+                }
+            }) }}
+            {{ form_errors(form.duration) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Modifier</button>
+        {{ form_end(form) }}
+    </div>
+
+    {# Include Flatpickr CSS and JS #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        // Initialize Flatpickr for start_time and end_time fields
+        flatpickr(".flatpickr", {
+            enableTime: true, // Enable time selection
+            dateFormat: "Y-m-d H:i", // Date and time format
+            minDate: "today", // Minimum date is today
+            maxDate: new Date().fp_incr(14), // Maximum date is two weeks from today
+            defaultDate: "today", // Default to today's date
+            time_24hr: true, // Use 24-hour format
+            locale: "fr", // French locale (optional)
+        });
+
+        // Character count for topic input
+        function updateCharCount() {
+            var inputField = document.getElementById("topicInput");
+            var charCount = inputField.value.length;
+            var maxLength = inputField.getAttribute("maxlength");
+            var charCountElement = document.getElementById("charCount");
+
+            charCountElement.innerText = charCount + " / " + maxLength;
+
+            // Change color if less than 20 characters
+            if (charCount < 20) {
+                charCountElement.style.color = "red"; // Show warning color
+            } else {
+                charCountElement.style.color = "green"; // Valid input
+            }
+        }
+
+        // Ensure it updates even after form validation errors
+        document.addEventListener("DOMContentLoaded", function() {
+            updateCharCount();
+            document.getElementById("topicInput").addEventListener("input", updateCharCount);
+        });
+    </script>
+{% endblock %}

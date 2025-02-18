@@ -1,0 +1,40 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Avaibility index{% endblock %}
+
+{% block body %}
+    <h1>Avaibility index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Start_time</th>
+                <th>End_time</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for Avaibility in availabilities %}
+            <tr>
+                <td>{{ Avaibility.id }}</td>
+                <td>{{ Avaibility.date ? Avaibility.date|date('Y-m-d') : '' }}</td>
+                <td>{{ Avaibility.startTime ? Avaibility.startTime|date('H:i:s') : '' }}</td>
+                <td>{{ Avaibility.endTime ? Avaibility.endTime|date('H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('admin_Avaibility_show', {'id': Avaibility.id}) }}">show</a>
+                    <a href="{{ path('admin_Avaibility_edit', {'id': Avaibility.id}) }}">edit</a>
+                        <a href="{{ path('admin_Avaibility_delete', {'id': Avaibility.id}) }}">delete</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_Avaibility_new') }}">Create new</a>
+{% endblock %}

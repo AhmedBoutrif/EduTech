@@ -1,0 +1,66 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Modifier une disponibilité{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Modifier une disponibilité</h1>
+
+        <div class="card shadow-lg p-4">
+            <div class="card-body">
+                {{ form_start(form) }}
+                
+                <div class="mb-3">
+                    {{ form_label(form.date, 'Date', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.date, {'attr': {'class': 'form-control flatpickr-date'}}) }}
+                    {{ form_errors(form.date) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.start_time, 'Heure de début', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.start_time, {'attr': {'class': 'form-control flatpickr-time'}}) }}
+                    {{ form_errors(form.start_time) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.end_time, 'Heure de fin', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.end_time, {'attr': {'class': 'form-control flatpickr-time'}}) }}
+                    {{ form_errors(form.end_time) }}
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                <a href="{{ path('admin_Avaibility_index') }}" class="btn btn-secondary">Annuler</a>
+                
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    {# Flatpickr pour un meilleur choix de date/heure #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let today = new Date();
+            let maxDate = new Date();
+            maxDate.setMonth(today.getMonth() + 1);
+
+            flatpickr(".flatpickr-date", {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+                locale: "fr",
+                minDate: today,
+                maxDate: maxDate
+            });
+
+            flatpickr(".flatpickr-time", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                locale: "fr"
+            });
+        });
+    </script>
+{% endblock %}

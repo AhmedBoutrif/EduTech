@@ -1,0 +1,102 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Ajouter des disponibilités{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Ajouter des disponibilités</h1>
+
+        <div class="card shadow-lg p-4">
+            <div class="card-body">
+                {{ form_start(form) }}
+                
+                <div id="Avaibility-entries" data-prototype="{{ form_widget(form.availabilities.vars.prototype)|e('html_attr') }}">
+                    {% for Avaibility in form.availabilities %}
+                        <div class="Avaibility-entry mb-3 border p-3 rounded">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    {{ form_label(Avaibility.date, 'Date', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(Avaibility.date, {'attr': {'class': 'form-control flatpickr-date'}}) }}
+                                    {{ form_errors(Avaibility.date) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_label(Avaibility.start_time, 'Heure de début', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(Avaibility.start_time, {'attr': {'class': 'form-control flatpickr-time'}}) }}
+                                    {{ form_errors(Avaibility.start_time) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_label(Avaibility.end_time, 'Heure de fin', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(Avaibility.end_time, {'attr': {'class': 'form-control flatpickr-time'}}) }}
+                                    {{ form_errors(Avaibility.end_time) }}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger btn-sm remove-entry mt-3">Supprimer</button>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" class="btn btn-success mt-3" id="add-Avaibility">Ajouter une autre disponibilité</button>
+                <br><br>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    <a href="{{ path('admin_Avaibility_index') }}" class="btn btn-secondary">Annuler</a>
+                </div>
+                
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    {# Flatpickr pour un meilleur choix de date/heure #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        flatpickr(".flatpickr-date", {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+            locale: "fr"
+        });
+        
+        flatpickr(".flatpickr-time", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            locale: "fr"
+        });
+
+        document.getElementById('add-Avaibility').addEventListener('click', function() {
+            let container = document.getElementById('Avaibility-entries');
+            let prototype = container.dataset.prototype;
+            let newEntry = document.createElement('div');
+            newEntry.classList.add('Avaibility-entry', 'mb-3', 'border', 'p-3', 'rounded');
+            newEntry.innerHTML = prototype.replace(/__name__/g, container.children.length);
+            container.appendChild(newEntry);
+
+            flatpickr(newEntry.querySelector('.flatpickr-date'), {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+                locale: "fr"
+            });
+            
+            flatpickr(newEntry.querySelectorAll('.flatpickr-time'), {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                locale: "fr"
+            });
+        });
+
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('remove-entry')) {
+                let entry = event.target.closest('.Avaibility-entry');
+                if (document.querySelectorAll('.Avaibility-entry').length > 1) {
+                    entry.remove();
+                }
+            }
+        });
+    </script>
+{% endblock %}

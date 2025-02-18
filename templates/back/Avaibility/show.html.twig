@@ -1,0 +1,41 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Avaibility{% endblock %}
+
+{% block body %}
+    <h1>Avaibility</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ Avaibility.id }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ Avaibility.date ? Avaibility.date|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Start_time</th>
+                <td>{{ Avaibility.startTime ? Avaibility.startTime|date('H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>End_time</th>
+                <td>{{ Avaibility.endTime ? Avaibility.endTime|date('H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('admin_Avaibility_index') }}">back to list</a>
+
+    <a href="{{ path('admin_Avaibility_edit', {'id': Avaibility.id}) }}">edit</a>
+
+    {{ include('Avaibility/_delete_form.html.twig') }}
+
+     <a href="{{ path('admin_reservation_new', {'AvaibilityId': Avaibility.id}) }}" class="btn btn-primary">
+    Reserver
+</a>
+<a href="{{ path('admin_reservation_showbyavaibility', {'AvaibilityId': Avaibility.id}) }}" class="btn btn-primary">
+    List Reservations
+</a>
+{% endblock %}
