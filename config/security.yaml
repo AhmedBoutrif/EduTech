@@ -1,0 +1,29 @@
+security:
+    enable_authenticator_manager: true
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            lazy: true
+            provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                default_target_path: app_redirect_after_login # 🛠 Ensure this points to redirection route!
+            logout:
+                path: app_logout
+                target: app_login # Redirects to login page after logout
+
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/tutor, roles: ROLE_TUTOR }
+        - { path: ^/student, roles: ROLE_STUDENT }
+        - { path: ^/login, roles: PUBLIC_ACCESS }

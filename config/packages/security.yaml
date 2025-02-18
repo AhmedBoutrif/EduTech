@@ -1,0 +1,35 @@
+security:
+    enable_authenticator_manager: true
+
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+            algorithm: auto
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email  # 🔹 Login with email
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            lazy: true
+            provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                username_parameter: _username
+                password_parameter: _password
+                default_target_path: app_home  # 🔹 Redirect after login
+                always_use_default_target_path: false
+            logout:
+                path: app_logout
+                target: app_home
+
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/dashboard, roles: [ROLE_USER, ROLE_ADMIN] }
