@@ -1,0 +1,59 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Quiz index{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-4">Quiz index</h1>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-sm mx-auto" style="max-width: 80%;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Note</th>
+                    <th>Questions</th>
+                    <th>Options</th>
+                    <th>Réponses Correctes</th>
+                    <th>Réponses Utilisateur</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for quiz in quizzes %}
+                <tr>
+                    <td>{{ quiz.id }}</td>
+                    <td>{{ quiz.note }}</td>
+                    <td>{{ quiz.questions ? quiz.questions|join(', ') : 'Aucune' }}</td>
+                    <td>{{ quiz.options ? quiz.options|join(', ') : 'Aucune' }}</td>
+                    <td>{{ quiz.reponsesCorrectes ? quiz.reponsesCorrectes|join(', ') : 'Aucune' }}</td>
+                    <td>{{ quiz.reponsesUtilisateur ? quiz.reponsesUtilisateur|join(', ') : 'Aucune' }}</td>
+                    <td>
+                        <a href="{{ path('app_quizb_show', {'id': quiz.id}) }}" class="btn btn-info btn-sm" title="Voir">
+                            <i class="bi bi-eye"></i> Voir
+                        </a>
+                        <a href="{{ path('app_quizb_edit', {'id': quiz.id}) }}" class="btn btn-warning btn-sm" title="Éditer">
+                            <i class="bi bi-pencil"></i> Éditer
+                        </a>
+                        <form method="post" action="{{ path('app_quizb_delete', {'id': quiz.id}) }}" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce quiz ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quiz.id) }}">
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                        <!-- Bouton pour jouer au quiz -->
+                        <a href="{{ path('app_quizb_play', {'id': quiz.id}) }}" class="btn btn-primary btn-sm" title="Jouer">
+                            <i class="bi bi-play-circle"></i> Jouer
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Aucun enregistrement trouvé</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center">
+        <a href="{{ path('app_quiz_new') }}" class="btn btn-success">Créer un nouveau quiz</a>
+    </div>
+{% endblock %}

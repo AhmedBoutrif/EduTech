@@ -1,0 +1,43 @@
+{{ form_start(form) }}
+    <div class="form-group">
+        {{ form_label(form.nomc) }}
+        {{ form_widget(form.nomc, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.descriptionc) }}
+        {{ form_widget(form.descriptionc, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.prixc) }}
+        {{ form_widget(form.prixc, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.prix_piece) }}
+        {{ form_widget(form.prix_piece, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.questionc) }}
+        {{ form_widget(form.questionc, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.reponse_correcte) }}
+        {{ form_widget(form.reponse_correcte, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.options) }}
+        {{ form_widget(form.options, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.reponse_utilisateur) }}
+        {{ form_widget(form.reponse_utilisateur, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

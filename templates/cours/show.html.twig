@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cours{% endblock %}
+
+{% block main %}
+    <h1 class="text-center mb-4">Cours</h1>
+
+    <!-- Boutons Retour et Modifier en haut -->
+    <div class="text-center mb-4">
+        <a href="{{ path('app_cours_index') }}" class="btn btn-primary">Retour à la liste</a>
+        <a href="{{ path('app_cours_edit', {'id': cours.id}) }}" class="btn btn-warning">Modifier</a>
+    </div>
+
+    <!-- Tableau des informations du cours -->
+    <div class="table-responsive mt-5">
+        <table class="table table-striped table-sm mx-auto" style="max-width: 80%;">
+            <tbody>
+                <tr>
+                    <th>ID</th>
+                    <td>{{ cours.id }}</td>
+                </tr>
+                <tr>
+                    <th>Categorie</th>
+                    <td>{{ cours.categorie }}</td>
+                </tr>
+                <tr>
+                    <th>Titre</th>
+                    <td>{{ cours.titre }}</td>
+                </tr>
+                <tr>
+                    <th>Contenu</th>
+                    <td>
+                        {% if cours.contenu ends with '.pdf' %}
+                            {% if fileExists %}
+                                <a href="{{ asset('uploads/pdf/' ~ cours.contenu) }}" target="_blank">
+                                    Voir le PDF : {{ cours.contenu }}
+                                </a>
+                            {% else %}
+                                <span>Le fichier n'existe pas.</span>
+                            {% endif %}
+                        {% else %}
+                            {{ cours.contenu }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Num_Certif</th>
+                    <td>{{ cours.certificat.id }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

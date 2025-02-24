@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quiz</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #eee;
+        }
+        .wrapper {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .option {
+            display: block;
+            padding: 10px;
+            background-color: #f4f4f4;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .option:hover {
+            background-color: #e8e8e8;
+        }
+        .selected {
+            background-color: #79d70f !important;
+            color: white;
+        }
+        input[type="radio"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <h3 class="text-center">Quiz</h3>
+    <form method="post" action="{{ path('quiz_submit') }}">
+        {% for question in questions %}
+            <div class="question-block">
+                <p class="font-weight-bold">{{ question.text }}</p>
+                <div class="options">
+                    {% for option in question.options %}
+                        <label class="option {% if question.id in reponse_utilisateur and reponse_utilisateur[question.id] == option %}selected{% endif %}">
+                            <input type="radio" name="reponse_utilisateur[{{ question.id }}]" value="{{ option }}" 
+                                {% if question.id in reponse_utilisateur and reponse_utilisateur[question.id] == option %}checked{% endif %}>
+                            {{ option }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary mt-3 w-100">Soumettre</button>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $(".option").click(function(){
+            $(this).siblings().removeClass("selected");
+            $(this).addClass("selected");
+            $(this).find("input").prop("checked", true);
+        });
+    });
+</script>
+
+</body>
+</html>

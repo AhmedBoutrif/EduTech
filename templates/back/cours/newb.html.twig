@@ -1,0 +1,57 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Nouveau Cours{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-4">Créer un nouveau cours</h1>
+
+    <!-- Formulaire centré avec une largeur réduite et plus d'espace en haut -->
+    <div class="container mt-5"> <!-- mt-5 ajoute de l'espace en haut -->
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+
+                <!-- Affichage des erreurs globales du formulaire -->
+                {% for error in form.vars.errors %}
+                    <div class="alert alert-danger">{{ error.message }}</div>
+                {% endfor %}
+
+                <!-- Champ pour la catégorie du cours -->
+                <div class="mb-3">
+                    {{ form_label(form.categorie) }}
+                    {{ form_widget(form.categorie, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.categorie) }}
+                </div>
+
+                <!-- Champ pour le titre du cours -->
+                <div class="mb-3">
+                    {{ form_label(form.titre) }}
+                    {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.titre) }}
+                </div>
+
+                <!-- Champ pour le contenu (texte ou fichier PDF) -->
+                <div class="mb-3">
+                    {{ form_label(form.contenu, 'Contenu PDF') }}
+                    {{ form_widget(form.contenu, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.contenu) }}
+                </div>
+
+                <!-- Champ pour le certificat associé (optionnel) -->
+                <div class="mb-3">
+                    {{ form_label(form.certificat, 'Certificat associé') }}
+                    {{ form_widget(form.certificat, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.certificat) }}
+                </div>
+
+                <!-- Boutons alignés côte à côte -->
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Enregistrer</button>
+                    <a href="{{ path('app_coursb_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Certificats{% endblock %}
+
+{% block main %}
+    <h1 class="mb-4">Liste des Certificats</h1>
+
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prix</th>
+                <th>Prix Pièce</th>
+                <th>Questions</th>
+                <th>Réponses Correctes</th>
+                <th>Options</th>
+                <th>Réponses Utilisateur</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for certificat in certificats %}
+                <tr>
+                    <td>{{ certificat.id|default('N/A') }}</td>
+                    <td>{{ certificat.nom|default('Non défini') }}</td>
+                    <td>{{ certificat.prix|default(0)|number_format(0, ',', ' ') }} DT</td>
+                    <td>{{ certificat.PrixPiece|default(0)|number_format(0, ',', ' ') }} DT</td>
+                    <td>
+                        {% if certificat.questionc is iterable and certificat.questionc is not empty %}
+                            {% set questions = [] %}
+                            {% for item in certificat.questionc %}
+                                {% if item is iterable %}
+                                    {% set questions = questions|merge([item.label|default('')]) %}
+                                {% else %}
+                                    {% set questions = questions|merge([item|default('')]) %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ questions|join(', ') }}
+                        {% else %}
+                            <span class="text-muted">Aucune question</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if certificat.reponseCorrecte is iterable and certificat.reponseCorrecte is not empty %}
+                            {% set reponsesCorrectes = [] %}
+                            {% for item in certificat.reponseCorrecte %}
+                                {% if item is iterable %}
+                                    {% set reponsesCorrectes = reponsesCorrectes|merge([item.label|default('')]) %}
+                                {% else %}
+                                    {% set reponsesCorrectes = reponsesCorrectes|merge([item|default('')]) %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ reponsesCorrectes|join(', ') }}
+                        {% else %}
+                            <span class="text-muted">Aucune réponse correcte</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if certificat.options is iterable and certificat.options is not empty %}
+                            {% set options = [] %}
+                            {% for item in certificat.options %}
+                                {% if item is iterable %}
+                                    {% set options = options|merge([item.label|default('')]) %}
+                                {% else %}
+                                    {% set options = options|merge([item|default('')]) %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ options|join(', ') }}
+                        {% else %}
+                            <span class="text-muted">Aucune option</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if certificat.reponseUtilisateur is iterable and certificat.reponseUtilisateur is not empty %}
+                            {% set reponsesUtilisateur = [] %}
+                            {% for item in certificat.reponseUtilisateur %}
+                                {% if item is iterable %}
+                                    {% set reponsesUtilisateur = reponsesUtilisateur|merge([item.label|default('')]) %}
+                                {% else %}
+                                    {% set reponsesUtilisateur = reponsesUtilisateur|merge([item|default('')]) %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ reponsesUtilisateur|join(', ') }}
+                        {% else %}
+                            <span class="text-muted">Aucune réponse utilisateur</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <a href="{{ path('app_certificat_show', {'id': certificat.id}) }}" class="btn btn-primary btn-sm">👁️ Voir</a>
+                        <a href="{{ path('app_certificat_edit', {'id': certificat.id}) }}" class="btn btn-warning btn-sm">✏️ Modifier</a>
+                        <form method="post" action="{{ path('app_certificat_delete', {'id': certificat.id}) }}" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer ce certificat ?');">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-danger btn-sm">🗑️ Supprimer</button>
+                        </form>
+                         <!-- Bouton pour jouer au certif -->
+                        <a href="{{ path('app_certificat_jouer', {'id': certificat.id}) }}" class="btn btn-primary btn-sm" title="Jouer">
+                            <i class="bi bi-play-circle"></i> Jouer
+                        </a>
+                    </td>
+                </tr>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="10" class="text-center text-muted">Aucun certificat trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_certificat_new') }}" class="btn btn-success">➕ Ajouter un certificat</a>
+{% endblock %}

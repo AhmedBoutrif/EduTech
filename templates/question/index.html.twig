@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Questions{% endblock %}
+
+{% block main %}
+    <h1>Liste des Questions</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Question</th>
+                <th>Options</th>
+                <th>Réponse correcte</th>
+                <th>Quiz</th>
+                <th>Certificat</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for question in questions %}
+    <tr>
+        <td>{{ question.id }}</td>
+        <td>{{ question.question }}</td>
+        <td>{{ question.options|join(', ') }}</td>
+        <td>{{ question.reponseCorrecte }}</td>
+        <td>{{ question.quiz ? question.quiz.id : 'N/A' }}</td>
+        <td>{{ question.certificat ? question.certificat.id : 'N/A' }}</td>
+        <td>
+            <a href="{{ path('app_question_show', {'id': question.id}) }}" class="btn btn-info">Voir</a>
+            <a href="{{ path('app_question_edit', {'id': question.id}) }}" class="btn btn-warning">Modifier</a>
+        </td>
+    </tr>
+{% endfor %}
+
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_question_new') }}" class="btn btn-success">Créer une nouvelle question</a>
+{% endblock %}

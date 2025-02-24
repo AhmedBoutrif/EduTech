@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <div style="display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100vh; padding-bottom: 20px;">
+        <h1>Chat avec OpenAI</h1>
+
+        <form method="POST" style="width: 100%; max-width: 400px;">
+            <label for="message">Entrez un message :</label>
+            <input type="text" id="message" name="message" placeholder="Entrez un message..." required style="width: 100%; padding: 10px; margin-bottom: 10px;">
+            <button type="submit" name="ok" style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer;">
+                Envoyer
+            </button>
+        </form>
+
+        {% if error %}
+            <div style="color: red; margin-top: 20px;">
+                <strong>Erreur :</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        {% if response %}
+            <div style="margin-top: 20px; text-align: center;">
+                <strong>Réponse :</strong> {{ response }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

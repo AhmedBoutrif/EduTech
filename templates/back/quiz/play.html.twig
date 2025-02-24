@@ -1,0 +1,74 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Jouer au Quiz{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Jouer au Quiz</h1>
+
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        <!-- Section Questions -->
+        <div id="questions" class="mb-4" data-prototype="{{ form_widget(form.questions.vars.prototype)|e('html_attr') }}">
+            <h3>Questions</h3>
+            {% for question in form.questions %}
+                <div class="mb-2">{{ form_row(question) }}</div>
+            {% endfor %}
+            <button type="button" class="btn btn-primary add-question">Ajouter une question</button>
+        </div>
+
+        <!-- Section Options -->
+        <div id="options" class="mb-4" data-prototype="{{ form_widget(form.options.vars.prototype)|e('html_attr') }}">
+            <h3>Options</h3>
+            {% for option in form.options %}
+                <div class="mb-2">{{ form_row(option) }}</div>
+            {% endfor %}
+            <button type="button" class="btn btn-primary add-option">Ajouter une option</button>
+        </div>
+
+        <!-- Section Réponses Correctes -->
+        <div id="reponsesCorrectes" class="mb-4" data-prototype="{{ form_widget(form.reponsesCorrectes.vars.prototype)|e('html_attr') }}">
+            <h3>Réponses Correctes</h3>
+            {% for reponse in form.reponsesCorrectes %}
+                <div class="mb-2">{{ form_row(reponse) }}</div>
+            {% endfor %}
+            <button type="button" class="btn btn-primary add-reponse-correcte">Ajouter une réponse correcte</button>
+        </div>
+
+        {{ form_row(form.cours) }}
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success">Enregistrer</button>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fonction pour ajouter dynamiquement des champs
+            function addField(containerId, buttonClass, numberOfFields) {
+                const container = document.getElementById(containerId);
+                const addButton = document.querySelector(`.${buttonClass}`);
+                const prototype = container.dataset.prototype;
+
+                addButton.addEventListener('click', function() {
+                    const index = container.children.length;
+                    // Ajouter les nouveaux champs
+                    for (let i = 0; i < numberOfFields; i++) {
+                        const newField = prototype.replace(/__name__/g, index + i); // Remplacer __name__ par l'index
+                        const newFieldElement = document.createElement('div');
+                        newFieldElement.innerHTML = newField;
+                        newFieldElement.classList.add('mb-3'); // Ajouter une marge Bootstrap
+                        container.insertBefore(newFieldElement, addButton);
+                    }
+                });
+            }
+
+            // Ajouter des champs pour chaque section
+            addField('questions', 'add-question', 1); // Ajoute une question
+            addField('options', 'add-option', 3); // Ajoute trois options
+            addField('reponsesCorrectes', 'add-reponse-correcte', 1); // Ajoute une réponse correcte
+        });
+    </script>
+{% endblock %}

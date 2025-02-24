@@ -1,0 +1,252 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jouer un Quiz{% endblock %}
+
+{% block main %}
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="quiz-container" id="quiz">
+        <div class="quiz-header">
+            <a href="{{ path('app_quiz_index') }}"><span class="fa fa-angle-left pr-2"></span> Retour au quiz</a>
+            <p class="text-muted">Répondez aux questions ci-dessous</p>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+
+        <div id="question-container">
+            <p class="question" id="question"></p>
+            <div class="options" id="options"></div>
+        </div>
+
+        <div class="quiz-footer">
+            <div class="timer" id="timer">Time: 30s</div>
+            <button class="btn btn-primary" id="next-btn">Next</button>
+        </div>
+    </div>
+</div>
+
+{# Affichage de la note après soumission #}
+{% if note is defined %}
+    <div class="results text-center">
+        <h5>Votre note : <strong>{{ note }}</strong> / {{ quiz.questions|length * 5 }}</h5>
+        <h5>Prix de la pièce : {{ prixPiece }} €</h5>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f2f5;
+        }
+
+        .quiz-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .question {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: #e9ecef;
+        }
+
+        .option.selected {
+            background-color: #cfe2ff;
+            border-color: #0d6efd;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .progress {
+            height: 10px;
+            margin-bottom: 20px;
+        }
+
+        .results {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .score {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        const quizData = [
+            {% for question in quiz.questions %}
+            {
+                question: "{{ question.question }}",
+                options: [
+                    {% if question.options is defined and question.options is not empty %}
+                        {% for option in question.options %}
+                            "{{ option }}",
+                        {% endfor %}
+                    {% endif %}
+                ],
+                correct: {{ question.correctOptionIndex ?? 0 }},
+                points: {{ question.points ?? 5 }} // Points par question
+            },
+            {% endfor %}
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let totalPoints = 0; // Total des points gagnés
+        let timer;
+        let timeLeft = 30;
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const nextBtn = document.getElementById('next-btn');
+        const timerEl = document.getElementById('timer');
+        const progressBar = document.querySelector('.progress-bar');
+        const quizContainer = document.getElementById('quiz');
+
+        function loadQuestion() {
+            const question = quizData[currentQuestion];
+            questionEl.textContent = question.question;
+            optionsEl.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.classList.add('option');
+                button.addEventListener('click', () => selectOption(button, index));
+                optionsEl.appendChild(button);
+            });
+            nextBtn.style.display = 'none';
+            timeLeft = 30;
+            if (timer) clearInterval(timer);
+            startTimer();
+            updateProgress();
+        }
+
+        function selectOption(selectedButton, optionIndex) {
+            const buttons = optionsEl.getElementsByClassName('option');
+            Array.from(buttons).forEach(button => button.classList.remove('selected'));
+            selectedButton.classList.add('selected');
+            nextBtn.style.display = 'block';
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = `Time: ${timeLeft}s`;
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    checkAnswer();
+                }
+            }, 1000);
+        }
+
+        function checkAnswer() {
+            const selectedOption = document.querySelector('.option.selected');
+            if (!selectedOption) return;
+
+            const selectedAnswer = Array.from(optionsEl.children).indexOf(selectedOption);
+            const question = quizData[currentQuestion];
+
+            if (selectedAnswer === question.correct) {
+                score++;
+                totalPoints += question.points; // Ajouter les points de la question
+                selectedOption.classList.add('correct');
+            } else {
+                selectedOption.classList.add('incorrect');
+                optionsEl.children[question.correct].classList.add('correct');
+            }
+
+            Array.from(optionsEl.children).forEach(button => button.disabled = true);
+            clearInterval(timer);
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressBar.setAttribute('aria-valuenow', progress);
+        }
+
+        function showResults() {
+            quizContainer.innerHTML = `
+                <div class="results">
+                    <div class="result-icon">
+                        <i class="fas ${score > quizData.length / 2 ? 'fa-trophy text-success' : 'fa-times-circle text-danger'}"></i>
+                    </div>
+                    <div class="score">Votre score : ${score}/${quizData.length}</div>
+                    <div class="score">Points totaux : ${totalPoints}</div>
+                    <p>${score > quizData.length / 2 ? 'Great job!' : 'Better luck next time!'}</p>
+                    <button class="btn btn-primary" onclick="location.reload()">Restart Quiz</button>
+                </div>
+            `;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            checkAnswer();
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        loadQuestion();
+    </script>
+{% endblock %}

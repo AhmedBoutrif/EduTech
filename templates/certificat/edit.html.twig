@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Certificat{% endblock %}
+
+{% block main %}
+    <h1 class="text-center mb-4">Modifier le Certificat</h1>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                {% for error in form.vars.errors %}
+                    <div class="alert alert-danger">{{ error.message }}</div>
+                {% endfor %}
+
+                <div class="mb-3">
+                    {{ form_label(form.nomc) }}
+                    {{ form_widget(form.nomc, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.nomc) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.descriptionc) }}
+                    {{ form_widget(form.descriptionc, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.descriptionc) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.prixc) }}
+                    {{ form_widget(form.prixc, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.prixc) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.prix_piece) }}
+                    {{ form_widget(form.prix_piece, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.prix_piece) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.questionc) }}
+                    {{ form_widget(form.questionc, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.questionc) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.options) }}
+                    {{ form_widget(form.options, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.options) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.reponse_correcte) }}
+                    {{ form_widget(form.reponse_correcte, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.reponse_correcte) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.reponse_utilisateur) }}
+                    <input type="text" class="form-control" value="{{ form.reponse_utilisateur.vars.value|join(', ') }}" readonly>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Mettre à jour</button>
+
+                    {% if certificat is defined and certificat.id is not null %}
+                        <form method="post" action="{{ path('app_certificat_delete', {'id': certificat.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce certificat ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ certificat.id) }}">
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    {% endif %}
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="{{ path('app_certificat_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

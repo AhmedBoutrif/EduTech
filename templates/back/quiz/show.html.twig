@@ -1,0 +1,56 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Détails du Quiz{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="card mx-auto" style="max-width: 80%;">
+            <div class="card-header text-center">
+                <h2>Détails du Quiz</h2>
+            </div>
+            <div class="card-body">
+                <p class="font-weight-bold">Note : {{ quiz.note }}</p>
+
+                <h3 class="mt-4">Questions :</h3>
+                <ul class="list-group">
+                    {% for question in questions %}
+                        <li class="list-group-item">{{ question }}</li>
+                    {% else %}
+                        <li class="list-group-item">Aucune question disponible</li>
+                    {% endfor %}
+                </ul>
+
+                <h3 class="mt-4">Options :</h3>
+                <ul class="list-group">
+                    {% for option in options %}
+                        <li class="list-group-item">{{ option }}</li>
+                    {% else %}
+                        <li class="list-group-item">Aucune option disponible</li>
+                    {% endfor %}
+                </ul>
+
+                <h3 class="mt-4">Réponses Correctes :</h3>
+                <ul class="list-group">
+                    {% for reponse in reponsesCorrectes %}
+                        <li class="list-group-item">{{ reponse }}</li>
+                    {% else %}
+                        <li class="list-group-item">Aucune réponse correcte disponible</li>
+                    {% endfor %}
+                </ul>
+
+                <h3 class="mt-4">Réponses Utilisateur :</h3>
+                <ul class="list-group">
+                    {% for reponse in reponsesUtilisateur %}
+                        <li class="list-group-item">{{ reponse }}</li>
+                    {% else %}
+                        <li class="list-group-item">Aucune réponse utilisateur disponible</li>
+                    {% endfor %}
+                </ul>
+
+                <div class="text-center mt-4">
+                    <a href="{{ path('app_quizb_index') }}" class="btn btn-primary">Retour à la liste</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

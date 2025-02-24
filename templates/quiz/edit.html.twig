@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Quiz{% endblock %}
+
+{% block main %}
+    
+    <h2>Questions :</h2>
+    <ul>
+        {% for question in questions %}
+            <li>{{ question }}</li>
+        {% else %}
+            <li>Aucune question disponible</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Options :</h2>
+    <ul>
+        {% for option in options %}
+            <li>{{ option }}</li>
+        {% else %}
+            <li>Aucune option disponible</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Réponses Correctes :</h2>
+    <ul>
+        {% for reponse in reponsesCorrectes %}
+            <li>{{ reponse }}</li>
+        {% else %}
+            <li>Aucune réponse correcte disponible</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Réponses Utilisateur :</h2>
+    <ul>
+        {% for reponse in reponsesUtilisateur %}
+            <li>{{ reponse }}</li>
+        {% else %}
+            <li>Aucune réponse utilisateur disponible</li>
+        {% endfor %}
+    </ul>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-success">Enregistrer les modifications</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_quiz_index') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+{% endblock %}

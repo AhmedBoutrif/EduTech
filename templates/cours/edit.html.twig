@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Cours{% endblock %}
+
+{% block main %}
+    <h1 class="text-center mb-4">Modifier le Cours</h1>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+
+                {% for error in form.vars.errors %}
+                    <div class="alert alert-danger">{{ error.message }}</div>
+                {% endfor %}
+
+                <div class="mb-3">
+                    {{ form_label(form.categorie) }}
+                    {{ form_widget(form.categorie, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.categorie) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.titre) }}
+                    {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.titre) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.contenu, 'Contenu PDF') }}
+                    {{ form_widget(form.contenu, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.contenu) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.certificat, 'Certificat associé') }}
+                    {{ form_widget(form.certificat, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.certificat) }}
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Mettre à jour</button>
+                    
+                    {% if cours is defined and cours.id is not null %}
+                        <form method="post" action="{{ path('app_cours_delete', {'id': cours.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ cours.id) }}">
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    {% endif %}
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="{{ path('app_cours_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

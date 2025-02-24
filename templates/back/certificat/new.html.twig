@@ -1,0 +1,109 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Créer un Certificat{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="my-4">Créer un Certificat</h1>
+
+    {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+
+    <div class="form-group">
+        <label class="control-label">Nom du certificat :</label>
+        {{ form_widget(form.nomc, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Description :</label>
+        {{ form_widget(form.descriptionc, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Prix :</label>
+        {{ form_widget(form.prixc, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Prix par pièce :</label>
+        {{ form_widget(form.prix_piece, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    {# Section pour les questions avec options et réponses #}
+    <div id="questions-container" class="my-4">
+        <h3>Questions</h3>
+        <div id="questions" data-prototype="{{ form_widget(form.questionc.vars.prototype)|e('html_attr') }}">
+            {% for question in form.questionc %}
+                <div class="question-block card mb-3">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Question :</label>
+                            {{ form_widget(question.label, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="options-container form-group">
+                            <label>Options :</label>
+                            {% for option in question.options %}
+                                {{ form_widget(option, {'attr': {'class': 'form-control mb-2'}}) }}
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            <label>Réponse correcte :</label>
+                            {{ form_widget(question.reponse_correcte, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <button type="button" class="btn btn-danger remove-question">Supprimer</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-question" class="btn btn-primary">Ajouter une question</button>
+    </div>
+
+    <button type="submit" class="btn btn-success">Enregistrer</button>
+
+    {{ form_end(form) }}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const questionsContainer = document.getElementById('questions');
+        const addButton = document.getElementById('add-question');
+        const prototype = questionsContainer.dataset.prototype;
+
+        addButton.addEventListener('click', function() {
+            const index = questionsContainer.children.length;
+            let newQuestion = prototype.replace(/__name__/g, index);
+            
+            const newElement = document.createElement('div');
+            newElement.classList.add('question-block', 'card', 'mb-3');
+            newElement.innerHTML = `
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Question :</label>
+                        ${newQuestion}
+                    </div>
+                    <div class="options-container form-group">
+                        <label>Options :</label>
+                        <input type="text" name="questionc[${index}][options][]" class="form-control mb-2" required>
+                        <input type="text" name="questionc[${index}][options][]" class="form-control mb-2" required>
+                        <input type="text" name="questionc[${index}][options][]" class="form-control mb-2" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Réponse correcte :</label>
+                        <input type="text" name="questionc[${index}][reponse_correcte]" class="form-control" required>
+                    </div>
+                    <button type="button" class="btn btn-danger remove-question">Supprimer</button>
+                </div>
+            `;
+            questionsContainer.appendChild(newElement);
+        });
+
+        questionsContainer.addEventListener('click', function(event) {
+            if (event.target.classList.contains('remove-question')) {
+                event.target.closest('.question-block').remove();
+            }
+        });
+    });
+</script>
+{% endblock %}

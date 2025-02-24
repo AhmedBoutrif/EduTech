@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Certificat{% endblock %}
+
+{% block main %}
+    <h1>Certificat : {{ certificat.nomc }}</h1>
+    <p>Description : {{ certificat.descriptionc }}</p>
+    <p>Prix : {{ certificat.prixc }} €</p>
+    <p>Prix par pièce : {{ certificat.prixPiece }} €</p>
+
+    <h2>Questions :</h2>
+    <ul>
+        {% for question in questions %}
+            <li>{{ question }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Options :</h2>
+    <ul>
+        {% for option in options %}
+            <li>{{ option }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Réponses Correctes :</h2>
+    <ul>
+        {% for reponse in reponsesCorrectes %}
+            <li>{{ reponse }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Réponses Utilisateur :</h2>
+    <ul>
+        {% for reponse in reponsesUtilisateur %}
+            <li>{{ reponse }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_certificat_index') }}" class="btn btn-primary">Retour à la liste</a>
+{% endblock %}

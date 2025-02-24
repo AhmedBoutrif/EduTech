@@ -1,0 +1,79 @@
+{% extends 'baseB.html.twig' %}
+
+{% block title %}Certificat{% endblock %}
+
+{% block body %}
+    <h1>Certificat</h1>
+
+    <form method="post" action="{{ path('app_certificat_new') }}">
+        {{ form_start(form) }}
+
+        <!-- Affichage du titre du certificat -->
+        {{ form_row(form.nomc) }}
+
+        <!-- Conteneur des questions -->
+        <div id="questions-container">
+            {% for question in form.questionc %}
+                <div class="question-item" data-question-id="{{ loop.index }}">
+                    {{ form_row(question) }}
+                    <div class="options-container">
+                        {% for option in form.options[loop.index0] %}
+                            {{ form_row(option) }}
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="btn btn-secondary add-option">Ajouter une option</button>
+                </div>
+            {% endfor %}
+            <button type="button" id="add-question" class="btn btn-primary">Ajouter une question</button>
+        </div>
+
+        {{ form_row(form.reponse_correcte) }}
+        {{ form_row(form.reponse_utilisateur) }}
+        {{ form_row(form.submit) }}
+
+        {{ form_end(form) }}
+    </form>
+
+    <a href="{{ path('app_certificat_index') }}">Retour à la liste</a>
+    <a href="{{ path('app_certificat_edit', {'id': certificat.id}) }}">Modifier</a>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let questionCount = document.querySelectorAll('.question-item').length;
+
+            document.getElementById('add-question').addEventListener('click', function() {
+                questionCount++;
+                const questionsContainer = document.getElementById('questions-container');
+
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question-item');
+                questionDiv.setAttribute('data-question-id', questionCount);
+                questionDiv.innerHTML = `
+                    <input type="text" name="certificat[questionc][${questionCount}]" placeholder="Entrez une nouvelle question" class="form-control">
+                    <div class="options-container">
+                        <input type="text" name="certificat[options][${questionCount}][]" placeholder="Option 1" class="form-control">
+                        <input type="text" name="certificat[options][${questionCount}][]" placeholder="Option 2" class="form-control">
+                        <input type="text" name="certificat[options][${questionCount}][]" placeholder="Option 3" class="form-control">
+                    </div>
+                    <button type="button" class="btn btn-secondary add-option">Ajouter une option</button>
+                `;
+                questionsContainer.appendChild(questionDiv);
+            });
+
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('add-option')) {
+                    const questionDiv = event.target.closest('.question-item');
+                    const optionsContainer = questionDiv.querySelector('.options-container');
+                    const optionInput = document.createElement('input');
+                    optionInput.type = 'text';
+                    optionInput.name = `certificat[options][${questionDiv.getAttribute('data-question-id')}][]`;
+                    optionInput.placeholder = 'Nouvelle option';
+                    optionInput.classList.add('form-control');
+                    optionsContainer.appendChild(optionInput);
+                }
+            });
+        });
+    </script>
+{% endblock %}

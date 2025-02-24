@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quiz Results{% endblock %}
+
+{% block body %}
+    <h2>Quiz Results</h2>
+
+    {% if score >= 0 %} 
+        <p>You got {{ score }} out of {{ quiz.options|length }} questions correct!</p> 
+        <p>You earned {{ score * 20 }} pieces!</p>
+    {% else %}
+        <p>You didn't answer any questions correctly.</p>
+    {% endif %}
+    <p

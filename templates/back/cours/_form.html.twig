@@ -1,0 +1,21 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+
+    {# Affichage des erreurs globaux du formulaire #}
+    {% if form.vars.errors|length > 0 %}
+        <div class="alert alert-danger">
+            <strong>Erreurs du formulaire :</strong>
+            <ul>
+                {% for error in form.vars.errors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {# Affichage des champs du formulaire #}
+    {{ form_widget(form) }}
+
+    {# Bouton de soumission #}
+    <button class="btn btn-success">{{ button_label|default('Enregistrer') }}</button>
+
+{{ form_end(form) }}
