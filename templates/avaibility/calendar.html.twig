@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Calendrier du {{ Avaibility.date|date('d/m/Y') }}{% endblock %}
+
+{% block main %}
+<h1>Calendrier du {{ Avaibility.date|date('d/m/Y') }}</h1>
+
+<!-- FullCalendar and FontAwesome -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+.fc-event {
+    padding: 20px;
+    height: 40px !important;
+    line-height: 15px !important;
+    font-size: 12px !important;
+    max-width: 400px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative;
+}
+.confirmed-slot {
+    border: 2px solid #1e7e34;
+    box-shadow: 0px 4px 10px rgba(40, 167, 69, 0.7);
+}
+.fc-event:hover {
+    transform: scale(1.2);
+    box-shadow: 0px 6px 15px rgba(255, 255, 255, 0.9);
+    filter: brightness(1.2);
+    z-index: 50;
+}
+.event-time {
+    color: white !important;
+    font-weight: bold;
+}
+.confirm-icon {
+    color: white !important;
+    cursor: pointer;
+    font-size: 18px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.confirmed {
+    color: #28a745 !important;
+}
+</style>
+
+<div id="calendar"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var meetings = [];
+
+    {% for reservation in reservations %}
+        {% if reservation.status != 'canceled' %}
+            meetings.push({
+                id: '{{ reservation.id }}',
+                start: '{{ reservation.getStartTime()|date("Y-m-d\\TH:i:s") }}',
+                end: '{{ (reservation.getStartTime()|date_modify("+" ~ reservation.duration ~ " minutes"))|date("Y-m-d\\TH:i:s") }}',
+                color: '{{ reservation.status == "confirmed" ? "#28a745" : "#87CEFA" }}',
+                textColor: "white",
+                extendedProps: {
+                    status: '{{ reservation.status }}',
+                    startTime: '{{ reservation.getStartTime()|date("H:i") }}',
+                    endTime: '{{ (reservation.getStartTime()|date_modify("+" ~ reservation.duration ~ " minutes"))|date("H:i") }}',
+                    iconClass: '{{ reservation.status == "confirmed" ? "fa-check-square confirmed" : "fa-square" }}'
+                }
+            });
+        {% endif %}
+    {% endfor %}
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridDay',
+        locale: 'fr',
+        initialDate: '{{ Avaibility.date|date('Y-m-d') }}',
+        slotMinTime: '{{ Avaibility.startTime|date("H:i:s") }}',
+         slotMaxTime: '{{ Avaibility.endTime|date_modify("+1 minute")|date("H:i:s") }}',
+        events: meetings,
+        slotDuration: '00:15:00',
+        slotLabelInterval: '01:00:00',
+        height: 'auto',
+        slotEventOverlap: false,
+
+        eventDidMount: function(info) {
+            if (info.event.backgroundColor === "#28a745") {
+                info.el.classList.add("confirmed-slot");
+            }
+
+            // Add reservation time and title
+            let contentHtml = `
+                <span class="event-time">${info.event.extendedProps.startTime} - ${info.event.extendedProps.endTime}</span>
+                <br>
+                <strong>${info.event.title}</strong>
+            `;
+
+            info.el.innerHTML = contentHtml;
+
+            // Create and append the confirmation icon
+            let confirmIcon = document.createElement("i");
+            confirmIcon.classList.add("fas", ...info.event.extendedProps.iconClass.split(" "));
+            confirmIcon.classList.add("confirm-icon");
+
+            confirmIcon.dataset.id = info.event.id; // Store ID for AJAX request
+
+            if (info.event.extendedProps.status !== "confirmed") {
+                confirmIcon.addEventListener("click", function() {
+                    toggleReservationStatus(this);
+                });
+            }
+
+            info.el.appendChild(confirmIcon);
+        }
+    });
+
+    calendar.render();
+});
+
+// Toggle reservation status
+function toggleReservationStatus(icon) {
+    let reservationId = icon.dataset.id;
+
+    fetch(`/toggle-reservation/${reservationId}`, {
+        method: "POST",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "Content-Type": "application/json"
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Toggle the icon
+            if (data.status === "confirmed") {
+                icon.classList.remove("fa-square");
+                icon.classList.add("fa-check-square", "confirmed");
+                icon.style.color = "#28a745";
+            } else {
+                icon.classList.remove("fa-check-square", "confirmed");
+                icon.classList.add("fa-square");
+                icon.style.color = "black";
+            }
+        }
+    });
+}
+</script>
+
+{% endblock %}

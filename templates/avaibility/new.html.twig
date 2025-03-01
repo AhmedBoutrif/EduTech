@@ -10,24 +10,24 @@
             <div class="card-body">
                 {{ form_start(form) }}
                 
-                <div id="Avaibility-entries" data-prototype="{{ form_widget(form.availabilities.vars.prototype)|e('html_attr') }}">
-                    {% for Avaibility in form.availabilities %}
-                        <div class="Avaibility-entry mb-3 border p-3 rounded">
+                <div id="availability-entries" data-prototype="{{ form_row(form.availabilities.vars.prototype)|e }}">
+                    {% for availability in form.availabilities %}
+                        <div class="availability-entry mb-3 border p-3 rounded">
                             <div class="row g-3">
                                 <div class="col-md-4">
-                                    {{ form_label(Avaibility.date, 'Date', {'label_attr': {'class': 'form-label'}}) }}
-                                    {{ form_widget(Avaibility.date, {'attr': {'class': 'form-control flatpickr-date'}}) }}
-                                    {{ form_errors(Avaibility.date) }}
+                                    {{ form_label(availability.date, 'Date', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(availability.date, {'attr': {'class': 'form-control flatpickr-date'}}) }}
+                                    {{ form_errors(availability.date) }}
                                 </div>
                                 <div class="col-md-4">
-                                    {{ form_label(Avaibility.start_time, 'Heure de début', {'label_attr': {'class': 'form-label'}}) }}
-                                    {{ form_widget(Avaibility.start_time, {'attr': {'class': 'form-control flatpickr-time'}}) }}
-                                    {{ form_errors(Avaibility.start_time) }}
+                                    {{ form_label(availability.start_time, 'Heure de début', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(availability.start_time, {'attr': {'class': 'form-control flatpickr-time'}}) }}
+                                    {{ form_errors(availability.start_time) }}
                                 </div>
                                 <div class="col-md-4">
-                                    {{ form_label(Avaibility.end_time, 'Heure de fin', {'label_attr': {'class': 'form-label'}}) }}
-                                    {{ form_widget(Avaibility.end_time, {'attr': {'class': 'form-control flatpickr-time'}}) }}
-                                    {{ form_errors(Avaibility.end_time) }}
+                                    {{ form_label(availability.end_time, 'Heure de fin', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(availability.end_time, {'attr': {'class': 'form-control flatpickr-time'}}) }}
+                                    {{ form_errors(availability.end_time) }}
                                 </div>
                             </div>
                             <button type="button" class="btn btn-danger btn-sm remove-entry mt-3">Supprimer</button>
@@ -35,7 +35,7 @@
                     {% endfor %}
                 </div>
 
-                <button type="button" class="btn btn-success mt-3" id="add-Avaibility">Ajouter une autre disponibilité</button>
+                <button type="button" class="btn btn-success mt-3" id="add-availability">Ajouter une autre disponibilité</button>
                 <br><br>
 
                 <div class="d-flex gap-2">
@@ -53,50 +53,48 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script>
-        flatpickr(".flatpickr-date", {
-            enableTime: false,
-            dateFormat: "Y-m-d",
-            locale: "fr"
-        });
-        
-        flatpickr(".flatpickr-time", {
-            enableTime: true,
-            noCalendar: true,
-            dateFormat: "H:i",
-            time_24hr: true,
-            locale: "fr"
-        });
-
-        document.getElementById('add-Avaibility').addEventListener('click', function() {
-            let container = document.getElementById('Avaibility-entries');
-            let prototype = container.dataset.prototype;
-            let newEntry = document.createElement('div');
-            newEntry.classList.add('Avaibility-entry', 'mb-3', 'border', 'p-3', 'rounded');
-            newEntry.innerHTML = prototype.replace(/__name__/g, container.children.length);
-            container.appendChild(newEntry);
-
-            flatpickr(newEntry.querySelector('.flatpickr-date'), {
+        function initializeFlatpickr() {
+            flatpickr(".flatpickr-date", {
                 enableTime: false,
                 dateFormat: "Y-m-d",
                 locale: "fr"
             });
-            
-            flatpickr(newEntry.querySelectorAll('.flatpickr-time'), {
+
+            flatpickr(".flatpickr-time", {
                 enableTime: true,
                 noCalendar: true,
                 dateFormat: "H:i",
                 time_24hr: true,
                 locale: "fr"
             });
-        });
+        }
 
-        document.addEventListener('click', function(event) {
-            if (event.target.classList.contains('remove-entry')) {
-                let entry = event.target.closest('.Avaibility-entry');
-                if (document.querySelectorAll('.Avaibility-entry').length > 1) {
-                    entry.remove();
+        document.addEventListener("DOMContentLoaded", function() {
+            initializeFlatpickr(); // Initialiser Flatpickr sur les champs existants
+
+            let container = document.getElementById('availability-entries');
+            let addButton = document.getElementById('add-availability');
+            let prototype = container.dataset.prototype;
+            let index = container.querySelectorAll('.availability-entry').length;
+
+            addButton.addEventListener('click', function() {
+                let newEntry = document.createElement('div');
+                newEntry.classList.add('availability-entry', 'mb-3', 'border', 'p-3', 'rounded');
+                newEntry.innerHTML = prototype.replace(/__name__/g, index);
+                container.appendChild(newEntry);
+                index++;
+
+                initializeFlatpickr(); // Réinitialiser Flatpickr pour inclure les nouveaux champs
+            });
+
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('remove-entry')) {
+                    let entry = event.target.closest('.availability-entry');
+                    if (document.querySelectorAll('.availability-entry').length > 1) {
+                        entry.remove();
+                    }
                 }
-            }
+            });
         });
     </script>
 {% endblock %}

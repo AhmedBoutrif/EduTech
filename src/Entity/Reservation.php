@@ -26,7 +26,7 @@ class Reservation
     private ?string $topic = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Assert\NotNull(message: "L'heure de début est requise.")]
+    //#[Assert\NotNull(message: "L'heure de début est requise.")]
     #[Assert\Type(\DateTimeInterface::class, message: "L'heure de début doit être une date valide.")]
     #[Assert\GreaterThanOrEqual(
         "today",
@@ -50,7 +50,7 @@ class Reservation
     private ?string $status = null;
 
     #[ORM\ManyToOne(targetEntity: Avaibility::class)]    
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Avaibility $Avaibility = null;
 
     

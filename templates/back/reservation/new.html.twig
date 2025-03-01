@@ -1,18 +1,10 @@
 {% extends 'baseB.html.twig' %}
 
 {% block title %}Nouvelle Réservation{% endblock %}
-{% block styles %}
-    {{ parent() }}
-    <style>
-        main {
-            margin-left: 300px; /* Ajuste l'espace pour éviter le chevauchement avec la sidebar */
-            padding-top: 70px; /* Ajuste la marge par rapport à la navbar */
-        }
-    </style>
-{% endblock %}
 
 {% block body %}
-<div class="container mt-5" style="margin-top: 56px;">
+   
+    <div class="container mt-5">
         <h1 class="mb-4">Créer une nouvelle réservation</h1>
         
         {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
@@ -27,6 +19,7 @@
                     'oninput': 'updateCharCount()'
                 }
             }) }}   
+      
             <p id="charCount" class="text-muted">0 / 255</p>
             
             {# Show error message from Symfony validator #}
@@ -36,12 +29,26 @@
             {{ form_errors(form.topic) }}
         </div>
 
+      
 
-        <div class="mb-3">
+      {#  <div class="mb-3">
             {{ form_label(form.start_time, "Heure de début", {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.start_time, {'attr': {'class': 'form-control flatpickr', 'placeholder': 'Sélectionnez la date et l\'heure de début'}}) }}
             {{ form_errors(form.start_time) }}
-        </div>
+        </div> #}
+
+             <div class="mb-3">
+    <label for="reservation_date" class="form-label">Date</label>
+    <input type="text" id="reservation_date" class="form-control" 
+           value="{{ reservation.avaibility.date|date('Y-m-d') }}" disabled>
+</div>
+
+
+    <div class="mb-3">
+        {{ form_label(form.hour) }}
+        {{ form_widget(form.hour, { 'attr': {'class': 'form-control'} }) }}
+        {{ form_errors(form.hour) }}
+    </div>
 
        <div class="mb-3">
             {{ form_label(form.duration, "Durée (minutes)", {'label_attr': {'class': 'form-label'}}) }}
@@ -64,15 +71,23 @@
 
     <script>
         // Initialize Flatpickr for start_time and end_time fields
-        flatpickr(".flatpickr", {
-            enableTime: true, // Enable time selection
-            dateFormat: "Y-m-d H:i", // Date and time format
-            minDate: "today", // Minimum date is today
-            maxDate: new Date().fp_incr(14), // Maximum date is two weeks from today
-            defaultDate: "today", // Default to today's date
-            time_24hr: true, // Use 24-hour format
-            locale: "fr", // French locale (optional)
+      {# In your template #}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const timePicker = document.querySelector('.time-picker');
+    if (timePicker) {
+        // You can use flatpickr or any other time picker library
+        flatpickr(timePicker, {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            minuteIncrement: 15
         });
+    }
+});
+
+
 
         // Character count for topic input
         function updateCharCount() {
@@ -90,6 +105,14 @@
                 charCountElement.style.color = "green"; // Valid input
             }
         }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    let hourInput = document.getElementById("reservation_hour");
+    hourInput.setAttribute("min", "{{ form.hour.vars.attr.min }}");
+    hourInput.setAttribute("max", "{{ form.hour.vars.attr.max }}");
+});
+
 
         // Ensure it updates even after form validation errors
         document.addEventListener("DOMContentLoaded", function() {

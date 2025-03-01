@@ -32,9 +32,12 @@
 
     {{ include('Avaibility/_delete_form.html.twig') }}
 
-     <a href="{{ path('admin_reservation_new', {'AvaibilityId': Avaibility.id}) }}" class="btn btn-primary">
-    Reserver
-</a>
+ {% if not isPast %}
+    <a href="{{ path('admin_reservation_new', {'AvaibilityId': Avaibility.id}) }}" class="btn btn-primary">
+        Réserver
+    </a>
+
+{% endif %}
 <a href="{{ path('admin_reservation_showbyavaibility', {'AvaibilityId': Avaibility.id}) }}" class="btn btn-primary">
     List Reservations
 </a>

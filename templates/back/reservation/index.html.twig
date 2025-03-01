@@ -40,10 +40,9 @@
         <td>
             <a href="{{ path('admin_reservation_show', {'id': reservation.id}) }}" class="btn btn-info btn-sm">Voir</a>
 
-            {% if not isPast %}
-                <a href="{{ path('admin_reservation_edit', {'id': reservation.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-           
-            {% endif %}
+         {% if not (isPast or reservation.status == 'canceled') %}
+    <a href="{{ path('app_reservation_edit', {'id': reservation.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+{% endif %}
         </td>
     </tr>
 {% endfor %}

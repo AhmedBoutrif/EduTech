@@ -1,8 +1,10 @@
+
 {% extends 'baseB.html.twig' %}
 
-{% block title %}Modifier la réservation{% endblock %}
+{% block title %}Modifier la Réservation{% endblock %}
 
 {% block body %}
+   
     <div class="container mt-5">
         <h1 class="mb-4">Modifier la réservation</h1>
         
@@ -18,6 +20,7 @@
                     'oninput': 'updateCharCount()'
                 }
             }) }}   
+      
             <p id="charCount" class="text-muted">0 / 255</p>
             
             {% if form.topic.vars.errors|length > 0 %}
@@ -26,16 +29,18 @@
             {{ form_errors(form.topic) }}
         </div>
 
-      
-<div class="form-group">
-    {{ form_label(form.start_time) }}
-    {{ form_widget(form.start_time, {
-        'attr': {
-            'class': 'form-control flatpickr',
-            'value': form.start_time.vars.value ? form.start_time.vars.value|date('Y-m-d\TH:i') : ''
-        }
-    }) }}
+       <div class="mb-3">
+    <label for="reservation_date" class="form-label">Date</label>
+    <input type="text" id="reservation_date" class="form-control" 
+           value="{{ reservation.avaibility.date|date('Y-m-d') }}" disabled>
 </div>
+
+
+        <div class="mb-3">
+            {{ form_label(form.hour) }}
+            {{ form_widget(form.hour, { 'attr': {'class': 'form-control'} }) }}
+            {{ form_errors(form.hour) }}
+        </div>
 
         <div class="mb-3">
             {{ form_label(form.duration, "Durée (minutes)", {'label_attr': {'class': 'form-label'}}) }}
@@ -48,27 +53,31 @@
             {{ form_errors(form.duration) }}
         </div>
 
-        <button type="submit" class="btn btn-primary">Modifier</button>
+        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+        <a href="{{ path('admin_reservation_index') }}" class="btn btn-secondary">Retour</a>
         {{ form_end(form) }}
     </div>
 
-    {# Include Flatpickr CSS and JS #}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script>
-        // Initialize Flatpickr for start_time and end_time fields
-        flatpickr(".flatpickr", {
-            enableTime: true, // Enable time selection
-            dateFormat: "Y-m-d H:i", // Date and time format
-            minDate: "today", // Minimum date is today
-            maxDate: new Date().fp_incr(14), // Maximum date is two weeks from today
-            defaultDate: "today", // Default to today's date
-            time_24hr: true, // Use 24-hour format
-            locale: "fr", // French locale (optional)
+        document.addEventListener('DOMContentLoaded', function() {
+            const timePicker = document.querySelector('.time-picker');
+            if (timePicker) {
+                flatpickr(timePicker, {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "H:i",
+                    time_24hr: true,
+                    minuteIncrement: 15
+                     defaultDate: "{{ reservation.startTime|date('H:i') }}" 
+                      defaultHour: {{ reservation.startTime|date('G') }}, 
+                    defaultMinute: {{ reservation.startTime|date('i') }}
+                });
+            }
         });
 
-        // Character count for topic input
         function updateCharCount() {
             var inputField = document.getElementById("topicInput");
             var charCount = inputField.value.length;
@@ -77,15 +86,19 @@
 
             charCountElement.innerText = charCount + " / " + maxLength;
 
-            // Change color if less than 20 characters
             if (charCount < 20) {
-                charCountElement.style.color = "red"; // Show warning color
+                charCountElement.style.color = "red";
             } else {
-                charCountElement.style.color = "green"; // Valid input
+                charCountElement.style.color = "green";
             }
         }
 
-        // Ensure it updates even after form validation errors
+        document.addEventListener("DOMContentLoaded", function () {
+            let hourInput = document.getElementById("reservation_hour");
+            hourInput.setAttribute("min", "{{ form.hour.vars.attr.min }}");
+            hourInput.setAttribute("max", "{{ form.hour.vars.attr.max }}");
+        });
+
         document.addEventListener("DOMContentLoaded", function() {
             updateCharCount();
             document.getElementById("topicInput").addEventListener("input", updateCharCount);

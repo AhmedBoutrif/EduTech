@@ -1,40 +1,100 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Avaibility index{% endblock %}
+{% block title %}Liste des disponibilités{% endblock %}
 
 {% block main %}
-    <h1>Avaibility index</h1>
+    <div class="container mt-4">
+        <h1 class="text-center text-primary mb-4">📅 Disponibilités</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>Start_time</th>
-                <th>End_time</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for Avaibility in availabilities %}
-            <tr>
-                <td>{{ Avaibility.id }}</td>
-                <td>{{ Avaibility.date ? Avaibility.date|date('Y-m-d') : '' }}</td>
-                <td>{{ Avaibility.startTime ? Avaibility.startTime|date('H:i:s') : '' }}</td>
-                <td>{{ Avaibility.endTime ? Avaibility.endTime|date('H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_Avaibility_show', {'id': Avaibility.id}) }}">show</a>
-                    <a href="{{ path('app_Avaibility_edit', {'id': Avaibility.id}) }}">edit</a>
-                        <a href="{{ path('app_Avaibility_delete', {'id': Avaibility.id}) }}">delete</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <!-- Filter Section -->
+        <div class="d-flex justify-content-center mb-4">
+            <div class="input-group w-50 shadow-sm">
+                <span class="input-group-text bg-light border-secondary">
+                    <i class="bi bi-calendar text-primary"></i>
+                </span>
+                <input type="text" id="availability-filter" class="form-control border-secondary rounded-end" 
+                       placeholder="Sélectionnez une date..." readonly>
+                <button class="btn btn-light border-secondary" id="clear-filter">
+                    <i class="bi bi-x-circle text-danger"></i>
+                </button>
+            </div>
+        </div>
 
-    <a href="{{ path('app_Avaibility_new') }}">Create new</a>
+        <!-- Availabilities List -->
+        <div class="row" id="availability-list">
+            {% for avaibility in availabilities %}
+                <div class="col-md-4 availability-item" data-date="{{ avaibility.date|date('Y-m-d') }}">
+                    <div class="card bg-light shadow-lg border border-secondary rounded-3 mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark">{{ avaibility.date|date('d M Y') }}</h5>
+                            <p class="card-text text-dark">
+                                ⏰ <strong>Début :</strong> {{ avaibility.startTime|date('H:i') }} <br>
+                                ⏳ <strong>Fin :</strong> {{ avaibility.endTime|date('H:i') }}
+                            </p>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ path('app_Avaibility_show', {'id': avaibility.id}) }}" class="btn btn-light btn-sm border">
+                                    <i class="bi bi-eye text-dark"></i>
+                                </a>
+                                
+                                <a href="{{ path('app_Avaibility_edit', {'id': avaibility.id}) }}" class="btn btn-light btn-sm border">
+                                    <i class="bi bi-pencil text-dark"></i>
+                                </a>
+
+                                <a href="{{ path('app_Avaibility_delete', {'id': avaibility.id}) }}" class="btn btn-light btn-sm border">
+                                    <i class="bi bi-trash text-dark"></i>
+                                </a>
+                                
+  
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <p class="text-center text-muted">Aucune disponibilité trouvée.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('app_Avaibility_new') }}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Ajouter une disponibilité
+            </a>
+        </div>
+    </div>
+
+    {# Flatpickr for date selection #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        flatpickr("#availability-filter", {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+            locale: "fr",
+            onChange: function(selectedDates, dateStr) {
+                filterAvailabilities(dateStr);
+            }
+        });
+
+        function filterAvailabilities(selectedDate) {
+            document.querySelectorAll('.availability-item').forEach(item => {
+                let itemDate = item.getAttribute('data-date');
+                if (!selectedDate || itemDate === selectedDate) {
+                    item.style.display = "block";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+
+        // Clear filter button
+        document.getElementById("clear-filter").addEventListener("click", function () {
+            document.getElementById("availability-filter").value = "";
+            filterAvailabilities("");
+        });
+    </script>
 {% endblock %}

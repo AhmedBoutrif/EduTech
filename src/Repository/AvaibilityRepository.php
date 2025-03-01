@@ -1,4 +1,5 @@
 <?php
+// src/Repository/AvaibilityRepository.php
 
 namespace App\Repository;
 
@@ -7,7 +8,10 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Avaibility>
+ * @method Avaibility|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Avaibility|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Avaibility[]    findAll()
+ * @method Avaibility[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class AvaibilityRepository extends ServiceEntityRepository
 {
@@ -16,28 +20,19 @@ class AvaibilityRepository extends ServiceEntityRepository
         parent::__construct($registry, Avaibility::class);
     }
 
-    //    /**
-    //     * @return Avaibility[] Returns an array of Avaibility objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Avaibility[] Returns an array of Avaibility objects
+     */
+    public function findRecentAvailabilities(): array
+    {
+        $today = new \DateTime();
+        $today->setTime(0, 0, 0); // Set time to the start of the day
 
-    //    public function findOneBySomeField($value): ?Avaibility
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.date >= :today')
+            ->setParameter('today', $today)
+            ->orderBy('a.date', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
