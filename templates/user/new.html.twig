@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create New User - Append{% endblock %}
+
+{% block main %}
+    <section class="section py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8">
+                    <div class="card shadow-lg border-0 rounded-4 bg-dark text-white">
+                        <div class="card-body p-5">
+                            <h2 class="card-title text-center mb-4 text-warning fw-bold">Create New User</h2>
+                            
+                            {# Start the form and disable HTML5 validation #}
+                            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
+                                
+                                {# Include the form fields with error messages #}
+                                {{ include('user/_form.html.twig') }}
+
+                                {# Submit Button #}
+                                <div class="d-grid gap-2 mt-4">
+                                    <button type="submit" class="btn btn-warning btn-lg">
+                                        <i class="bi bi-save me-2"></i> Create User
+                                    </button>
+                                </div>
+                            
+                            {# End the form #}
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

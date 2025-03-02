@@ -1,0 +1,48 @@
+{# user/_form.html.twig #}
+
+{# First Name Field #}
+<div class="form-group">
+    {{ form_label(form.firstName, "First Name") }}
+    {{ form_widget(form.firstName, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.firstName) }}
+</div>
+
+{# Last Name Field #}
+<div class="form-group">
+    {{ form_label(form.lastName, "Last Name") }}
+    {{ form_widget(form.lastName, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.lastName) }}
+</div>
+
+{# Email Field #}
+<div class="form-group">
+    {{ form_label(form.email, "Email") }}
+    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.email) }}
+</div>
+
+{# Phone Number Field (Ajouté) #}
+<div class="form-group">
+    {{ form_label(form.phoneNumber, "Phone Number") }}
+    {{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.phoneNumber) }}
+</div>
+
+{# Roles Field #}
+<div class="form-group">
+    {{ form_label(form.roles, "Roles") }}
+    <div class="form-check">
+        {{ form_widget(form.roles) }}
+    </div>
+    {{ form_errors(form.roles) }}
+</div>
+
+{# Password Field #}
+<div class="form-group">
+    {{ form_label(form.password, "Password") }}
+    {{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.password) }}
+</div>
+
+{# Submit Button #}
+<button type="submit" class="btn btn-primary mt-3">Save</button>
