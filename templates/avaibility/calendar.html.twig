@@ -3,7 +3,6 @@
 {% block title %}Calendrier du {{ Avaibility.date|date('d/m/Y') }}{% endblock %}
 
 {% block main %}
-<h1>Calendrier du {{ Avaibility.date|date('d/m/Y') }}</h1>
 
 <!-- FullCalendar and FontAwesome -->
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
@@ -48,106 +47,244 @@
 .confirmed {
     color: #28a745 !important;
 }
+/* Add a refresh indicator style */
+.refresh-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    display: none;
+    z-index: 1000;
+}
 </style>
 
 <div id="calendar"></div>
+<div class="refresh-indicator">Actualisation...</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
-    var meetings = [];
-
-    {% for reservation in reservations %}
-        {% if reservation.status != 'canceled' %}
-            meetings.push({
-                id: '{{ reservation.id }}',
-                start: '{{ reservation.getStartTime()|date("Y-m-d\\TH:i:s") }}',
-                end: '{{ (reservation.getStartTime()|date_modify("+" ~ reservation.duration ~ " minutes"))|date("Y-m-d\\TH:i:s") }}',
-                color: '{{ reservation.status == "confirmed" ? "#28a745" : "#87CEFA" }}',
-                textColor: "white",
-                extendedProps: {
-                    status: '{{ reservation.status }}',
-                    startTime: '{{ reservation.getStartTime()|date("H:i") }}',
-                    endTime: '{{ (reservation.getStartTime()|date_modify("+" ~ reservation.duration ~ " minutes"))|date("H:i") }}',
-                    iconClass: '{{ reservation.status == "confirmed" ? "fa-check-square confirmed" : "fa-square" }}'
-                }
-            });
-        {% endif %}
-    {% endfor %}
-
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'timeGridDay',
-        locale: 'fr',
-        initialDate: '{{ Avaibility.date|date('Y-m-d') }}',
-        slotMinTime: '{{ Avaibility.startTime|date("H:i:s") }}',
-         slotMaxTime: '{{ Avaibility.endTime|date_modify("+1 minute")|date("H:i:s") }}',
-        events: meetings,
-        slotDuration: '00:15:00',
-        slotLabelInterval: '01:00:00',
-        height: 'auto',
-        slotEventOverlap: false,
-
-        eventDidMount: function(info) {
-            if (info.event.backgroundColor === "#28a745") {
-                info.el.classList.add("confirmed-slot");
-            }
-
-            // Add reservation time and title
-            let contentHtml = `
-                <span class="event-time">${info.event.extendedProps.startTime} - ${info.event.extendedProps.endTime}</span>
-                <br>
-                <strong>${info.event.title}</strong>
-            `;
-
-            info.el.innerHTML = contentHtml;
-
-            // Create and append the confirmation icon
-            let confirmIcon = document.createElement("i");
-            confirmIcon.classList.add("fas", ...info.event.extendedProps.iconClass.split(" "));
-            confirmIcon.classList.add("confirm-icon");
-
-            confirmIcon.dataset.id = info.event.id; // Store ID for AJAX request
-
-            if (info.event.extendedProps.status !== "confirmed") {
-                confirmIcon.addEventListener("click", function() {
-                    toggleReservationStatus(this);
+    var calendar;
+    var avaibilityId = {{ Avaibility.id }};
+    var refreshInterval = 30000; // 30 seconds refresh interval
+    var refreshTimer;
+    var refreshIndicator = document.querySelector('.refresh-indicator');
+    
+    // Initial calendar creation and rendering
+    initializeCalendar();
+    
+    // Set up periodic refresh
+    startRefreshTimer();
+    
+    function initializeCalendar() {
+        var initialEvents = [];
+        
+        {% for reservation in reservations %}
+            {% if reservation.status != 'canceled' %}
+                initialEvents.push({
+                    id: '{{ reservation.id }}',
+                    title: '{{ reservation.title ?? "Rendez-vous" }}',
+                    start: '{{ reservation.getStartTime()|date("Y-m-d\\TH:i:s") }}',
+                    end: '{{ (reservation.getStartTime()|date_modify("+" ~ reservation.duration ~ " minutes"))|date("Y-m-d\\TH:i:s") }}',
+                    color: '{{ reservation.status == "confirmed" ? "#28a745" : "#87CEFA" }}',
+                    textColor: "white",
+                    extendedProps: {
+                        status: '{{ reservation.status }}',
+                        startTime: '{{ reservation.getStartTime()|date("H:i") }}',
+                        endTime: '{{ (reservation.getStartTime()|date_modify("+" ~ reservation.duration ~ " minutes"))|date("H:i") }}',
+                        iconClass: '{{ reservation.status == "confirmed" ? "fa-check-square confirmed" : "fa-square" }}'
+                    }
                 });
-            }
+            {% endif %}
+        {% endfor %}
+        
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridDay',
+            locale: 'fr',
+            initialDate: '{{ Avaibility.date|date('Y-m-d') }}',
+            slotMinTime: '{{ Avaibility.startTime|date("H:i:s") }}',
+            slotMaxTime: '{{ Avaibility.endTime|date_modify("+1 minute")|date("H:i:s") }}',
+            events: initialEvents,
+            slotDuration: '00:15:00',
+            slotLabelInterval: '01:00:00',
+            height: 'auto',
+            slotEventOverlap: false,
 
-            info.el.appendChild(confirmIcon);
+            eventDidMount: function(info) {
+                if (info.event.backgroundColor === "#28a745") {
+                    info.el.classList.add("confirmed-slot");
+                }
+
+                // Add reservation time and title
+                let contentHtml = `
+                    <span class="event-time">${info.event.extendedProps.startTime} - ${info.event.extendedProps.endTime}</span>
+                    <br>
+                    <strong>${info.event.title}</strong>
+                `;
+
+                info.el.innerHTML = contentHtml;
+
+                // Create and append the confirmation icon
+                let confirmIcon = document.createElement("i");
+                confirmIcon.classList.add("fas", ...info.event.extendedProps.iconClass.split(" "));
+                confirmIcon.classList.add("confirm-icon");
+
+                confirmIcon.dataset.id = info.event.id; // Store ID for AJAX request
+
+                if (info.event.extendedProps.status !== "confirmed") {
+                    confirmIcon.addEventListener("click", function() {
+                        toggleReservationStatus(this);
+                    });
+                }
+
+                info.el.appendChild(confirmIcon);
+            }
+        });
+
+        calendar.render();
+    }
+    
+    // Function to refresh calendar data via AJAX
+    function refreshCalendarData() {
+        // Show refresh indicator
+        refreshIndicator.style.display = 'block';
+        
+        fetch(`/api/calendar-data/${avaibilityId}`, {
+            method: "GET",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove all current events
+                let currentEvents = calendar.getEvents();
+                currentEvents.forEach(event => event.remove());
+                
+                // Add new events from the AJAX response
+                data.reservations.forEach(reservation => {
+                    if (reservation.status !== 'canceled') {
+                        calendar.addEvent({
+                            id: reservation.id,
+                            start: reservation.startTime,
+                            end: reservation.endTime,
+                            color: reservation.status === "confirmed" ? "#28a745" : "#87CEFA",
+                            textColor: "white",
+                            extendedProps: {
+                                status: reservation.status,
+                                startTime: reservation.startTimeFormatted,
+                                endTime: reservation.endTimeFormatted,
+                                iconClass: reservation.status === "confirmed" ? "fa-check-square confirmed" : "fa-square"
+                            }
+                        });
+                    }
+                });
+                
+                // Hide refresh indicator after a short delay
+                setTimeout(() => {
+                    refreshIndicator.style.display = 'none';
+                }, 500);
+            }
+        })
+        .catch(error => {
+            console.error("Error refreshing calendar data:", error);
+            refreshIndicator.style.display = 'none';
+        });
+    }
+    
+    // Start the refresh timer
+    function startRefreshTimer() {
+        refreshTimer = setInterval(refreshCalendarData, refreshInterval);
+    }
+    
+    // Stop the refresh timer
+    function stopRefreshTimer() {
+        clearInterval(refreshTimer);
+    }
+    
+    // Toggle reservation status
+    function toggleReservationStatus(icon) {
+        let reservationId = icon.dataset.id;
+        
+        // Stop refresh timer during manual update
+        stopRefreshTimer();
+
+        fetch(`/toggle-reservation/${reservationId}`, {
+            method: "POST",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json"
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Toggle the icon
+                if (data.status === "confirmed") {
+                    icon.classList.remove("fa-square");
+                    icon.classList.add("fa-check-square", "confirmed");
+                    icon.style.color = "#28a745";
+                    
+                    // Also update the event color
+                    let eventId = icon.dataset.id;
+                    let event = calendar.getEventById(eventId);
+                    if (event) {
+                        event.setProp('color', '#28a745');
+                        event.setExtendedProp('status', 'confirmed');
+                        event.setExtendedProp('iconClass', 'fa-check-square confirmed');
+                        
+                        // Find the event element and add confirmed-slot class
+                        let eventEl = event.el;
+                        if (eventEl) {
+                            eventEl.classList.add("confirmed-slot");
+                        }
+                    }
+                } else {
+                    icon.classList.remove("fa-check-square", "confirmed");
+                    icon.classList.add("fa-square");
+                    icon.style.color = "white";
+                    
+                    // Update the event color
+                    let eventId = icon.dataset.id;
+                    let event = calendar.getEventById(eventId);
+                    if (event) {
+                        event.setProp('color', '#87CEFA');
+                        event.setExtendedProp('status', 'not confirmed');
+                        event.setExtendedProp('iconClass', 'fa-square');
+                        
+                        // Find the event element and remove confirmed-slot class
+                        let eventEl = event.el;
+                        if (eventEl) {
+                            eventEl.classList.remove("confirmed-slot");
+                        }
+                    }
+                }
+                
+                // Restart refresh timer after manual update
+                startRefreshTimer();
+            }
+        })
+        .catch(error => {
+            console.error("Error toggling reservation status:", error);
+            // Restart refresh timer even if there was an error
+            startRefreshTimer();
+        });
+    }
+    
+    // Stop refresh when page is not visible
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            stopRefreshTimer();
+        } else {
+            refreshCalendarData(); // Refresh immediately when page becomes visible
+            startRefreshTimer();
         }
     });
-
-    calendar.render();
 });
-
-// Toggle reservation status
-function toggleReservationStatus(icon) {
-    let reservationId = icon.dataset.id;
-
-    fetch(`/toggle-reservation/${reservationId}`, {
-        method: "POST",
-        headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            "Content-Type": "application/json"
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Toggle the icon
-            if (data.status === "confirmed") {
-                icon.classList.remove("fa-square");
-                icon.classList.add("fa-check-square", "confirmed");
-                icon.style.color = "#28a745";
-            } else {
-                icon.classList.remove("fa-check-square", "confirmed");
-                icon.classList.add("fa-square");
-                icon.style.color = "black";
-            }
-        }
-    });
-}
 </script>
 
 {% endblock %}

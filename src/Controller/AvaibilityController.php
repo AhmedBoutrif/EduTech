@@ -110,22 +110,61 @@ final class AvaibilityController extends AbstractController
         return $this->redirectToRoute('app_Avaibility_index', [], Response::HTTP_SEE_OTHER);
     }
     
-    #[Route('/calendar/{id}', name: 'app_calendar', methods: ['GET'])]
-    public function showCalendar(Avaibility $avaibility, ManagerRegistry $doctrine): Response
-    {
-        $entityManager = $doctrine->getManager();
-        
-        // Charger explicitement les réservations liées à l'avaibility
-        $reservations = $entityManager->getRepository(Reservation::class)
-            ->findBy(['Avaibility' => $avaibility]);
-            
+   // Keep your original calendar route as-is
+#[Route('/calendar/{id}', name: 'app_calendar', methods: ['GET'])]
+public function showCalendar(Avaibility $avaibility, ManagerRegistry $doctrine): Response
+{
+    $entityManager = $doctrine->getManager();
+    
+    // Charger explicitement les réservations liées à l'avaibility
+    $reservations = $entityManager->getRepository(Reservation::class)
+        ->findBy(['Avaibility' => $avaibility]);
+    
+    return $this->render('Avaibility/calendar.html.twig', [
+        'Avaibility' => $avaibility,
+        'reservations' => $reservations,
+    ]);
+}
 
-        return $this->render('Avaibility/calendar.html.twig', [
-            'Avaibility' => $avaibility,
-            'reservations' => $reservations,
-        ]);
+// Make sure this API endpoint works only for XMLHttpRequest calls
+#[Route('/api/calendar-data/{id}', name: 'api_calendar_data', methods: ['GET'])]
+public function getCalendarData(Request $request, Avaibility $avaibility, ManagerRegistry $doctrine): JsonResponse
+{
+    // Only respond to AJAX requests
+    if (!$request->isXmlHttpRequest()) {
+        return $this->json(['success' => false, 'message' => 'Only AJAX requests are allowed'], 400);
     }
     
+    $entityManager = $doctrine->getManager();
+    
+    // Fetch reservations for this availability
+    $reservations = $entityManager->getRepository(Reservation::class)
+        ->findBy(['Avaibility' => $avaibility]);
+    
+    $formattedReservations = [];
+    
+    foreach ($reservations as $reservation) {
+        if ($reservation->getStatus() !== 'canceled') {
+            $startTime = $reservation->getStartTime();
+            $endTime = (clone $startTime)->modify("+" . $reservation->getDuration() . " minutes");
+            
+            $formattedReservations[] = [
+                'id' => $reservation->getId(),
+                'startTime' => $startTime->format('Y-m-d\TH:i:s'),
+                'endTime' => $endTime->format('Y-m-d\TH:i:s'),
+                'startTimeFormatted' => $startTime->format('H:i'),
+                'endTimeFormatted' => $endTime->format('H:i'),
+                'status' => $reservation->getStatus(),
+                'duration' => $reservation->getDuration()
+            ];
+        }
+    }
+    
+    return $this->json([
+        'success' => true,
+        'reservations' => $formattedReservations
+    ]);
+} 
     #[Route('/toggle-reservation/{id}', name: 'toggle_reservation', methods: ['POST'])]
 public function toggleReservation(int $id, ManagerRegistry $doctrine): JsonResponse
 {
