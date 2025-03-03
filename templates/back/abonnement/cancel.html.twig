@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Paiement annulé</h1>
+        <p>Votre paiement a été annulé.</p>
+        <a href="{{ path('app_cart') }}" class="btn btn-primary">Retour au panier</a>
+    </div>
+{% endblock %}

@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Certification;
-
 use App\Repository\PanierRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-
 
 final class ControllerPanierController extends AbstractController
 {
@@ -31,36 +29,31 @@ final class ControllerPanierController extends AbstractController
         return $this->redirectToRoute('app_certification_index');
     }
 
-
     #[Route('/cart', name: 'app_cart')]
-    public function showCart(SessionInterface $session, EntityManagerInterface $em): Response
+    public function showCart(SessionInterface $session, PanierRepository $panierRepository): Response
     {
         $cart = $session->get('cart', []);
-        $products = [];
+        
+        // Récupérer les certifications triées
+        $certifications = $panierRepository->findSortedCertifications($cart);
 
-        $certifications = $em->getRepository(Certification::class)->findBy([
-            'id' => $cart 
-        ]);
-
-        foreach ($certifications as $certification) {
-            $products[] = [
+        $products = array_map(function ($certification) {
+            return [
                 'id' => $certification->getId(),
                 'name' => $certification->getName(),
                 'price' => $certification->getPrix(),
                 'image' => $certification->getImg()
             ];
-        }
+        }, $certifications);
 
-        $totalPrice = 0;
-        foreach ($products as $product) {
-            $totalPrice += $product['price'];
-        }
+        $totalPrice = array_sum(array_column($products, 'price'));
 
         return $this->render('home/panier.html.twig', [
             'products' => $products,
             'totalPrice' => $totalPrice,
         ]);
     }
+
     #[Route('/cart/remove/{id}', name: 'app_cart_remove')]
     public function removeFromCart(int $id, SessionInterface $session): RedirectResponse
     {
@@ -70,13 +63,11 @@ final class ControllerPanierController extends AbstractController
             unset($cart[$key]);
             $session->set('cart', $cart);
 
-            $this->addFlash('success', 'Certification removed from cart!');
+            $this->addFlash('success', 'Certification supprimée du panier !');
         } else {
-            $this->addFlash('error', 'Certification not found in the cart!');
+            $this->addFlash('error', 'Certification introuvable dans le panier !');
         }
 
         return $this->redirectToRoute('app_cart');
     }
-
-   
 }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Panier;
+use App\Entity\Certification;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,24 @@ class PanierRepository extends ServiceEntityRepository
         parent::__construct($registry, Panier::class);
     }
 
-    //    /**
-    //     * @return Panier[] Returns an array of Panier objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Récupère les certifications triées par ordre alphabétique.
+     *
+     * @param array $cart Liste des IDs des certifications dans le panier.
+     * @return Certification[] Retourne les certifications triées.
+     */
+    public function findSortedCertifications(array $cart): array
+    {
+        if (empty($cart)) {
+            return [];
+        }
 
-    //    public function findOneBySomeField($value): ?Panier
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $this->getEntityManager()->getRepository(Certification::class)
+            ->createQueryBuilder('c')
+            ->where('c.id IN (:cart)')
+            ->setParameter('cart', $cart)
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

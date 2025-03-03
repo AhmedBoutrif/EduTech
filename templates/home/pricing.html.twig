@@ -7,40 +7,141 @@
     <!-- Pricing Section -->
     <section id="pricing" class="pricing section">
 
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Abonnements</h2>
-        <p></p>
-      </div><!-- End Section Title -->
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Abonnements</h2>
+            <p></p>
+        </div><!-- End Section Title -->
 
-      <div class="container" data-aos="zoom-in" data-aos-delay="100">
-        <div class="row g-4">
+        <!-- Search Bar -->
+        <div class="d-flex justify-content-center mb-4">
+            <input id="search-input" class="form-control w-50 border-0 shadow-lg rounded-pill py-2 px-4" type="text" placeholder="Rechercher un abonnement..." aria-label="Search">
+        </div>
+        <!-- /Search Bar -->
 
-          {% for pricing in pricings %}
+        <div class="container" data-aos="zoom-in" data-aos-delay="100">
+            <div class="row g-4" id="pricing-list">
 
-          <div class="col-lg-4">
-            <div class="pricing-item">
-              <h3>{{pricing.nom}}</h3>
-              <div class="icon">
-                <i class="bi bi-box"></i>
-              </div>
-              <h4>{{pricing.prix}} <sup>DT</sup><span>  {{pricing.duree}}month</span></h4>
- <ul class="text-center">
-  {{pricing.description}}
-</ul>
+                {% if pagination|length > 0 %}
+                    {% for pricing in pagination.items %}
+                    <div class="col-lg-4 pricing-item">
+                        <div class="pricing-card">
+                            <h3 class="pricing-name">{{ pricing.nom }}</h3>
+                            <div class="icon">
+                                <i class="bi bi-box"></i>
+                            </div>
+                            <h4>{{ pricing.prix }} <sup>DT</sup><span> {{ pricing.duree }} mois</span></h4>
+                            <ul class="text-center">
+                                {{ pricing.description }}
+                            </ul>
+                            <div class="text-center">
+                                <form action="{{ path('app_controller_abonnement_pay', {id: pricing.id}) }}" method="POST">
+                                    <button type="submit" class="buy-btn">Acheter</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div><!-- End Pricing Item -->
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center">Aucun abonnement trouvé.</p>
+                {% endif %}
 
-              <div class="text-center"><a href="#" class="buy-btn">Buy Now</a></div>
             </div>
-          </div><!-- End Pricing Item -->
 
-          {% endfor %}
+            <!-- Blog Pagination Section -->
+            <section id="blog-pagination" class="blog-pagination section">
+                <div class="container">
+                    <div class="d-flex justify-content-center">
+                        <ul class="pagination">
+                            <!-- Previous Page -->
+                            <li class="page-item {% if pagination.currentPageNumber == 1 %}disabled{% endif %}">
+                                <a class="page-link" href="{{ path('app_pricing', {'page': pagination.currentPageNumber - 1}) }}">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
 
+                            <!-- Page Numbers -->
+                            {% for page in 1..pagination.pageCount %}
+                                <li class="page-item {% if page == pagination.currentPageNumber %}active{% endif %}">
+                                    <a class="page-link" href="{{ path('app_pricing', {'page': page}) }}">{{ page }}</a>
+                                </li>
+                            {% endfor %}
+
+                            <!-- Next Page -->
+                            <li class="page-item {% if pagination.currentPageNumber == pagination.pageCount %}disabled{% endif %}">
+                                <a class="page-link" href="{{ path('app_pricing', {'page': pagination.currentPageNumber + 1}) }}">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section><!-- /Blog Pagination Section -->
 
         </div>
 
-      </div>
-
     </section><!-- /Pricing Section -->
-
 </main>
+
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#search-input").on("input", function() {
+            var value = $(this).val().toLowerCase();
+
+            $(".pricing-item").filter(function() {
+                $(this).toggle($(this).find(".pricing-name").text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Pagination stylisée */
+        .pagination {
+            list-style: none;
+            padding-left: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pagination .page-item {
+            margin: 0 5px;
+        }
+
+        .pagination .page-link {
+            color: #333 !important; /* Texte normal */
+            border: none !important; /* Suppression des bordures */
+            background-color: transparent !important;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #d32f2f !important; /* Rouge plus foncé */
+            color: white !important; /* Texte blanc */
+            border-radius: 8px !important;
+            padding: 12px 18px;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #ccc !important; /* Grisé pour désactivé */
+            pointer-events: none;
+            background-color: white !important;
+        }
+
+        .pagination .page-item:hover .page-link {
+            background-color: #b71c1c !important; /* Rouge encore plus foncé au survol */
+            color: white !important;
+            border-radius: 8px !important;
+        }
+    </style>
+{% endblock %}
+
+
 {% endblock %}
